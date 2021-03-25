@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "181053443001",
+    "project_id": "hackathon-mbit",
+    "storage_bucket": "hackathon-mbit.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:181053443001:android:0d54340d5cc025a6ed0468",
+        "android_client_info": {
+          "package_name": "com.example.hacktata"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "181053443001-ine2jcfh8uun9ave8kh49ged405gqbk8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCwQOxvMzcOGbp3XkMj-1vfcf2QZYVYm3s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "181053443001-ine2jcfh8uun9ave8kh49ged405gqbk8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
