@@ -1,6 +1,4 @@
-# hacktata
-
-A new Flutter project.
+# Hackathon Scanner
 
 ## Getting Started
 
