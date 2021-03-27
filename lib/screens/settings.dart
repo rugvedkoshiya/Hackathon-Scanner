@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class Settings extends StatefulWidget {
+class Setting extends StatefulWidget {
   @override
-  _SettingsState createState() => _SettingsState();
+  _SettingState createState() => _SettingState();
 }
 
-class _SettingsState extends State<Settings> {
+class _SettingState extends State<Setting> {
   bool soundON = false;
   bool vibrationON = false;
 
@@ -55,7 +55,7 @@ class _SettingsState extends State<Settings> {
                   onChanged: (value) {
                     setState(() {
                       soundON = value;
-                      print(soundON);
+                      // print(soundON);
                     });
                   },
                   activeTrackColor: Colors.lightGreenAccent,
@@ -82,7 +82,7 @@ class _SettingsState extends State<Settings> {
                   onChanged: (value) {
                     setState(() {
                       vibrationON = value;
-                      print(vibrationON);
+                      // print(vibrationON);
                     });
                   },
                   activeTrackColor: Colors.lightGreenAccent,

@@ -1,20 +1,20 @@
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:hacktata/main.dart';
 import 'package:hacktata/screens/login.dart';
 import 'package:hacktata/screens/profile.dart';
 import 'package:hacktata/screens/settings.dart';
-// import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:flutter/services.dart';
-// import 'package:image_picker/image_picker.dart';
-// import 'package:settings_ui/settings_ui.dart';
-// import 'package:custom_switch/custom_switch.dart';
 
 final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
-String userEmail = 'Not Available';
+final firestore = FirebaseFirestore.instance;
+String userEmail = 'username@example.com';
 
 class Home extends StatefulWidget {
   @override
@@ -26,17 +26,12 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    // final GlobalKey _scaffoldKey = new GlobalKey();
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        // key: _scaffoldKey,
         appBar: AppBar(
           backgroundColor: Colors.green.shade400,
           title: Text("Hackathon Scanner"),
-          // actions: <Widget>[
-          //   IconButton(icon: Icon(Icons.home), onPressed: () => debugPrint("Homepage chhe aa"),)
-          // ],
         ),
         drawer: Drawer(
           child: ListView(
@@ -47,7 +42,6 @@ class _HomeState extends State<Home> {
                   decoration: BoxDecoration(
                     color: Colors.green,
                   ),
-                  // child: Text("LIST SETTINGS"),
                   child: Stack(children: <Widget>[
                     Positioned(
                         bottom: 12.0,
@@ -61,9 +55,18 @@ class _HomeState extends State<Home> {
               ListTile(
                   leading: Icon(Icons.person),
                   title: Text("Profile"),
-                  // onTap: () => debugPrint("Profile"),
-                  onTap: () {
-                    // Navigator.of(context).pop();
+                  onTap: () async {
+                    User user = firebaseAuth.currentUser!;
+                    userEmail = firebaseAuth.currentUser!.email!;
+                    await firestore
+                        .collection("users")
+                        .doc(firebaseAuth.currentUser!.uid)
+                        .get()
+                        .then((value) async {
+                      // print(value.data());
+                      displayName = value.data()!['displayName'];
+                      mobileNo = value.data()!['mobileNo'].toString();
+                    });
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => Profile()),
@@ -77,7 +80,6 @@ class _HomeState extends State<Home> {
                     context,
                     MaterialPageRoute(builder: (context) => Home()),
                   );
-                  // Navigator.of(context).pop();
                 },
               ),
               ListTile(
@@ -86,7 +88,7 @@ class _HomeState extends State<Home> {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => Settings()),
+                    MaterialPageRoute(builder: (context) => Setting()),
                   );
                 },
               ),
@@ -96,42 +98,70 @@ class _HomeState extends State<Home> {
                 onTap: () async {
                   await firebaseAuth.signOut();
                   Navigator.of(context).pop();
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(builder: (context) => Login()),
-                  // );
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Login()),
+                  );
                 },
               ),
             ],
           ),
         ),
-        body: Column(
-          children: <Widget>[
-            Row(
-              children: <Widget>[
-                Text(
-                  '$qrresult',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              Align(
+                alignment: Alignment.topCenter,
+                child: ListView.builder(
+                  reverse: true,
+                  shrinkWrap: true,
+                  itemCount: userData['scanResult'].length,
+                  itemBuilder: (context, index) {
+                    return Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Stack(
+                          children: <Widget>[
+                            Container(
+                                height: 100,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(24),
+                                    color: Colors.green.shade200,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.green.shade200,
+                                        blurRadius: 12,
+                                        offset: Offset(0, 6),
+                                      ),
+                                    ])),
+                            Padding(
+                              padding: const EdgeInsets.all(15),
+                              child: Row(
+                                children: <Widget>[
+                                  Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: <Widget>[
+                                      Text(
+                                        userData['scanResult'][index],
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
                 ),
-              ],
-            ),
-            Row(
-              children: <Widget>[
-                Text(
-                  '$userEmail',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-              ],
-            ),
-          ],
+              ),
+            ],
+          ),
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
@@ -147,6 +177,28 @@ class _HomeState extends State<Home> {
 
               setState(() {
                 this.qrresult = qrCode;
+              });
+              if (qrresult != "-1") {
+                CollectionReference users = await firestore.collection('users');
+                await firestore
+                    .collection("users")
+                    .doc(firebaseAuth.currentUser!.uid.toString())
+                    .update({
+                  "scanResult": FieldValue.arrayUnion([qrresult]),
+                });
+              }
+              // print("SSuccess!");
+              User user = firebaseAuth.currentUser!;
+              await firestore
+                  .collection("users")
+                  .doc(user.uid)
+                  .get()
+                  .then((value) {
+                userData = value.data()!;
+                // print(userData);
+              });
+              setState(() {
+                userData = userData;
               });
             } on PlatformException {
               qrresult = 'Failed to get platform version.';
