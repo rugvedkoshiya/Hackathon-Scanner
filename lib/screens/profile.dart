@@ -1,12 +1,17 @@
+import 'dart:io';
+
 import 'package:another_flushbar/flushbar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hacktata/screens/home.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:image_picker/image_picker.dart';
 
 final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 final firestore = FirebaseFirestore.instance;
+final firestorage = FirebaseStorage.instance;
 
 class Profile extends StatefulWidget {
   @override
@@ -20,17 +25,75 @@ class _ProfileState extends State<Profile> {
   String _oldPass = "";
   String _newPass = "";
   String _newPassConf = "";
-
   String emailID = "";
+
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
   final GlobalKey<FormState> _formChangekey = GlobalKey<FormState>();
-  // File _image;
-  // final imagePicker = imagePicker();
 
-  // Future getImage() async {
-  //   final image = await imagePicker.getImage(Source: ImageSource.camera);
+  File? _cameraImage;
+  final imagePicker = ImagePicker();
+
+  Future getImageFromCamera() async {
+    final cameraImageSelected =
+        await imagePicker.getImage(source: ImageSource.camera);
+    if (cameraImageSelected != null) {
+      setState(() {
+        _cameraImage = File(cameraImageSelected.path);
+      });
+    } else {
+      print("No camera image selected");
+    }
+    // setState(() {
+    //   if (cameraImageSelected != null) {
+    //     _cameraImage = File(cameraImageSelected.path);
+    //   } else {
+    //     print("No image selected");
+    //   }
+    //   // _cameraImage = File(cameraImageSelected.path);
+    // });
+  }
+
+  Future getImageFromGallery() async {
+    final galleryImageSelected =
+        await imagePicker.getImage(source: ImageSource.gallery);
+    if (galleryImageSelected != null) {
+      setState(() {
+        _cameraImage = File(galleryImageSelected.path);
+      });
+    } else {
+      print("No gallery image selected");
+    }
+    // setState(() {
+    //   if (galleryImageSelected != null) {
+    //     _cameraImage = File(galleryImageSelected.path);
+    //   } else {
+    //     print("No image selected");
+    //   }
+    //   // _cameraImage = File(cameraImageSelected.path);
+    // });
+  }
+
+  Future uploadFileFunc(BuildContext context, File uploadFile) async {
+    try {
+      // firebaseAuth.currentUser!.email!;
+      // var userUid = firebaseAuth.currentUser!.uid;
+      await firestorage.ref('profiles/$userUid.png').putFile(uploadFile);
+      profileLink =
+          await firestorage.ref('profiles/$userUid.png').getDownloadURL();
+      setState(() {
+        print("Profile Uploaded");
+      });
+    } on FirebaseException catch (e) {
+      // e.g, e.code == 'canceled'
+      print(e);
+    }
+  }
+
+  // Future getImageFromGallery() async {
+  //   var galleryImageSelected = await imagePicker.pickImage(source: ImageSource.gallery);
+  //       // PickedFile galleryImageSelected = await ImagePicker.pickImage(source: ImageSource.gallery);
   //   setState(() {
-  //     _image = File(image.path);
+  //     _galleryImage = galleryImageSelected;
   //   });
   // }
 
@@ -79,11 +142,13 @@ class _ProfileState extends State<Profile> {
                           shape: BoxShape.circle,
                           image: DecorationImage(
                             fit: BoxFit.cover,
+                            // image: Image(profileLink),
+                            image: NetworkImage(profileLink),
                             // image: _imageFile == null
                             //   ? NetworkImage("https://rugvedkoshiya.github.io/assets/img/avatars/avatar.jpg")
                             //   : FileImage(File(_imageFile.path)),
-                            image: NetworkImage(
-                                "https://rugvedkoshiya.github.io/assets/img/avatars/avatar.jpg"),
+                            // image: NetworkImage(
+                            //     "https://rugvedkoshiya.github.io/assets/img/avatars/avatar.jpg"),
                           ),
                         ),
                       ),
@@ -507,17 +572,44 @@ class _ProfileState extends State<Profile> {
                 // ignore: deprecated_member_use
                 FlatButton.icon(
                   icon: Icon(Icons.camera),
-                  onPressed: () {
-                    // camera
-                    print("working...");
+                  onPressed: () async {
+                    try {
+                      await getImageFromCamera();
+                      await uploadFileFunc(context, _cameraImage!);
+                      print("Camera Uploaded");
+                      // Navigator.of(context).pop();
+                      Navigator.pop(context);
+                    } catch (e) {
+                      print(e);
+                      Flushbar(
+                        title: "Could Not Update Profile",
+                        message: "Select Smaller Image",
+                        icon: Icon(
+                          Icons.error,
+                          size: 28.0,
+                          color: Colors.red,
+                        ),
+                        duration: Duration(seconds: 3),
+                      )..show(context);
+                    }
                   },
                   label: Text("Camera"),
                 ),
                 // ignore: deprecated_member_use
                 FlatButton.icon(
                   icon: Icon(Icons.image),
-                  onPressed: () {
-                    // gallery
+                  onPressed: () async {
+                    try {
+                      await getImageFromGallery();
+                      await uploadFileFunc(context, _cameraImage!);
+                      print("Gallery Uploaded");
+                      print(Navigator.defaultRouteName);
+                      print(Navigator.canPop(context));
+                      // Navigator.of(context).pop();
+                      Navigator.pop(context);
+                    } catch (e) {
+                      print(e);
+                    }
                   },
                   label: Text("Gallary"),
                 )

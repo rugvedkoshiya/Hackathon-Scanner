@@ -149,7 +149,7 @@ class _SignupState extends State<Signup> {
                         Navigator.of(context).pop();
                         Flushbar(
                           title: "Successfully Registerd",
-                          message: "Now Login to Proceed!",
+                          message: "Verify your Email for Login",
                           icon: Icon(
                             Icons.check_circle_rounded,
                             size: 28.0,

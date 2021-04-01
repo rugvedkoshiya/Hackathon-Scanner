@@ -23,32 +23,50 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  # firebase_auth: "^0.20.1"
-  firebase_auth: ^1.0.1
-  settings_ui: "^0.6.0"
-  custom_switch: "0.0.1"
-  # firebase_core : ^0.7.0
-  firebase_core: ^1.0.2
-  # http:  "^0.13.0"
-  # flutter_secure_storage: "^3.3.3"
-  # image_picker: "^0.6.7+14"
-  # path_provider: "^1.6.24"
+  firebase_auth: 
+  settings_ui: ^0.6.0
+  custom_switch: 0.0.1
+  firebase_core: 
+  firebase_storage:
   path_provider: ^2.0.1
-  # firebase_auth_platform_interface: ^4.0.0
-  # plugin_platform_interface: ^2.0.0
-  flutter_barcode_scanner: "^1.0.1"
-  another_flushbar: "^1.10.17"
-  cloud_firestore: "^1.0.2"
-  # cloud_firestore: "^0.14.0"
-  
-  # http_parser: "^4.0.0"
-  # firebase_auth_web: "^0.3.3"
-
-
-
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
+  another_flushbar: ^1.10.17
+  cloud_firestore: 
+  image_picker: 
   cupertino_icons: ^1.0.2
+  barcode_scan: ^1.0.0
+  # qr_flutter: ^3.1.0
+  # flutter_barcode_scanner:
+    
+
+# dependencies:
+#   flutter:
+#     sdk: flutter
+#   # firebase_auth: "^0.20.1"
+#   firebase_auth: ^1.0.1
+#   settings_ui: "^0.6.0"
+#   custom_switch: "0.0.1"
+#   # firebase_core : ^0.7.0
+#   firebase_core: ^1.0.2
+#   # http:  "^0.13.0"
+#   # flutter_secure_storage: "^3.3.3"
+#   # image_picker: "^0.6.7+14"
+#   # path_provider: "^1.6.24"
+#   path_provider: ^2.0.1
+#   # firebase_auth_platform_interface: ^4.0.0
+#   # plugin_platform_interface: ^2.0.0
+#   flutter_barcode_scanner: "^1.0.1"
+#   another_flushbar: "^1.10.17"
+#   cloud_firestore: "^1.0.2"
+#   # cloud_firestore: "^0.14.0"
+  
+#   # http_parser: "^4.0.0"
+#   # firebase_auth_web: "^0.3.3"
+
+
+
+#   # The following adds the Cupertino Icons font to your application.
+#   # Use with the CupertinoIcons class for iOS style icons.
+#   cupertino_icons: ^1.0.2
 
 dev_dependencies:
   flutter_test:

@@ -1,20 +1,27 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 // ignore: import_of_legacy_library_into_null_safe
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+// import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:hacktata/main.dart';
 import 'package:hacktata/screens/login.dart';
 import 'package:hacktata/screens/profile.dart';
 import 'package:hacktata/screens/settings.dart';
+import 'package:barcode_scan/barcode_scan.dart';
 
 final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 final firestore = FirebaseFirestore.instance;
+final firestorage = FirebaseStorage.instance;
+
 String userEmail = 'username@example.com';
+var userUid = firebaseAuth.currentUser!.uid;
+var profileLink =
+    "https://firebasestorage.googleapis.com/v0/b/hackathon-mbit.appspot.com/o/profiles%2Fdummyprofile.png?alt=media&token=b300eaeb-70aa-40ba-8a49-0a141ea10602";
 
 class Home extends StatefulWidget {
   @override
@@ -56,7 +63,6 @@ class _HomeState extends State<Home> {
                   leading: Icon(Icons.person),
                   title: Text("Profile"),
                   onTap: () async {
-                    User user = firebaseAuth.currentUser!;
                     userEmail = firebaseAuth.currentUser!.email!;
                     await firestore
                         .collection("users")
@@ -67,6 +73,18 @@ class _HomeState extends State<Home> {
                       displayName = value.data()!['displayName'];
                       mobileNo = value.data()!['mobileNo'].toString();
                     });
+                    try {
+                      print("have error avshe?");
+                      profileLink = await firestorage
+                          .ref('profiles/$userUid.png')
+                          .getDownloadURL();
+                      print(profileLink);
+                    } on FirebaseException catch (e) {
+                      print("gaya");
+                    } catch (e) {
+                      print("hmm");
+                    }
+
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => Profile()),
@@ -164,30 +182,23 @@ class _HomeState extends State<Home> {
           ),
         ),
         floatingActionButton: FloatingActionButton(
+          // onPressed: () {
+          //   print("QR pressed");
+          // },
           onPressed: () async {
             try {
-              final qrCode = await FlutterBarcodeScanner.scanBarcode(
-                '#ff6666',
-                'Cancel',
-                true,
-                ScanMode.QR,
-              );
-
-              if (!mounted) return;
-
+              final qrCode = await BarcodeScanner.scan();
               setState(() {
                 this.qrresult = qrCode;
               });
-              if (qrresult != "-1") {
-                CollectionReference users = await firestore.collection('users');
-                await firestore
-                    .collection("users")
-                    .doc(firebaseAuth.currentUser!.uid.toString())
-                    .update({
-                  "scanResult": FieldValue.arrayUnion([qrresult]),
-                });
-              }
-              // print("SSuccess!");
+              print(qrCode);
+              CollectionReference users = await firestore.collection('users');
+              await firestore
+                  .collection("users")
+                  .doc(firebaseAuth.currentUser!.uid.toString())
+                  .update({
+                "scanResult": FieldValue.arrayUnion([qrresult]),
+              });
               User user = firebaseAuth.currentUser!;
               await firestore
                   .collection("users")
@@ -195,14 +206,75 @@ class _HomeState extends State<Home> {
                   .get()
                   .then((value) {
                 userData = value.data()!;
-                // print(userData);
+                print(userData);
               });
               setState(() {
                 userData = userData;
+                print("done11");
               });
-            } on PlatformException {
-              qrresult = 'Failed to get platform version.';
+            } on PlatformException catch (e) {
+              if (e.code == BarcodeScanner.CameraAccessDenied) {
+                setState(() {
+                  this.qrresult = 'No camera permission!';
+                });
+              } else {
+                setState(() => this.qrresult = 'Unknown error: $e');
+              }
+            } on FormatException {
+              setState(() => this.qrresult = 'Nothing captured.');
+            } catch (e) {
+              setState(() => this.qrresult = 'Unknown error: $e');
             }
+
+            // try {
+            //   print("done1");
+            //   final qrCode = await FlutterBarcodeScanner.scanBarcode(
+            //     '#ff6666',
+            //     'Cancel',
+            //     true,
+            //     ScanMode.QR,
+            //   );
+            //   print("done2");
+
+            //   if (!mounted) return;
+            //   print("done3");
+
+            //   setState(() {
+            //     print("done4");
+            //     this.qrresult = qrCode;
+            //   });
+            //   print("done5");
+            //   if (qrresult != "-1") {
+            //     print("done6");
+            //     CollectionReference users = await firestore.collection('users');
+            //     print("done7");
+            //     await firestore
+            //         .collection("users")
+            //         .doc(firebaseAuth.currentUser!.uid.toString())
+            //         .update({
+            //       "scanResult": FieldValue.arrayUnion([qrresult]),
+            //     });
+            //     print("done8");
+            //   }
+            //   // print("SSuccess!");
+            //   User user = firebaseAuth.currentUser!;
+            //   print("done9");
+            //   await firestore
+            //       .collection("users")
+            //       .doc(user.uid)
+            //       .get()
+            //       .then((value) {
+            //     userData = value.data()!;
+            //     // print(userData);
+            //   });
+            //   print("done10");
+            //   setState(() {
+            //     userData = userData;
+            //     print("done11");
+            //   });
+            // } on PlatformException {
+            //   qrresult = 'Failed to get platform version.';
+            // }
           },
           backgroundColor: Colors.green.shade400,
           child: Icon(Icons.camera_alt),

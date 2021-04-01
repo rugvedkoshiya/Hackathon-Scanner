@@ -1,3 +1,4 @@
+import 'package:another_flushbar/flushbar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hacktata/screens/signup.dart';
@@ -74,13 +75,28 @@ class _ForgotState extends State<Forgot> {
                 child: FlatButton(
                   onPressed: () async {
                     if (_formForgotKey.currentState!.validate()) {
-                      await firebaseAuth.sendPasswordResetEmail(email: _email);
-                      Navigator.of(context).pop();
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ForgotConformation()),
-                      );
+                      try {
+                        await firebaseAuth.sendPasswordResetEmail(
+                            email: _email);
+                        Navigator.of(context).pop();
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ForgotConformation()),
+                        );
+                      } catch (e) {
+                        print("Error email not found");
+                        Flushbar(
+                          title: "Email not found!!",
+                          message: "Singup now",
+                          icon: Icon(
+                            Icons.error,
+                            size: 28.0,
+                            color: Colors.red,
+                          ),
+                          duration: Duration(seconds: 3),
+                        )..show(context);
+                      }
                     }
                   },
                   child: Text(
@@ -155,7 +171,6 @@ class _ForgotConformationState extends State<ForgotConformation> {
               // ignore: deprecated_member_use
               child: FlatButton(
                 onPressed: () {
-                  Navigator.of(context).pop();
                   Navigator.of(context).pop();
                 },
                 child: Text(
