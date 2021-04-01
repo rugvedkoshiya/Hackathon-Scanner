@@ -150,8 +150,10 @@ class _LoginState extends State<Login> {
                             MaterialPageRoute(builder: (context) => Home()),
                           );
                         } else {
+                          print("else working");
                           await user.sendEmailVerification();
                           await firebaseAuth.signOut();
+                          setState(() {});
                           showDialog(
                               context: context,
                               builder: (BuildContext contex) {

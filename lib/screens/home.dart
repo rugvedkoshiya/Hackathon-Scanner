@@ -7,6 +7,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 // ignore: import_of_legacy_library_into_null_safe
 // import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:hacktata/main.dart';
@@ -14,6 +15,9 @@ import 'package:hacktata/screens/login.dart';
 import 'package:hacktata/screens/profile.dart';
 import 'package:hacktata/screens/settings.dart';
 import 'package:barcode_scan/barcode_scan.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:soundpool/soundpool.dart';
+import 'package:vibration/vibration.dart';
 
 final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 final firestore = FirebaseFirestore.instance;
@@ -88,6 +92,13 @@ class _HomeState extends State<Home> {
     } else {
       var copydata = userData['scanResult'][index];
       Clipboard.setData(new ClipboardData(text: copydata));
+      print("jakkas");
+      Fluttertoast.showToast(
+        msg: "Copied!",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+      );
       return false;
     }
   }
@@ -203,10 +214,10 @@ class _HomeState extends State<Home> {
             padding: EdgeInsets.all(20.0),
             itemCount: userData['scanResult'].length,
             itemBuilder: (context, index) {
-              return Dismissible(
+              return new Dismissible(
+                key: UniqueKey(),
                 confirmDismiss: (direction) => conformDismiss(direction, index),
                 // key: Key(userData[index]),
-                key: UniqueKey(),
                 onDismissed: (direction) async {
                   String action;
                   if (direction == DismissDirection.endToStart) {
@@ -222,6 +233,7 @@ class _HomeState extends State<Home> {
                       "scanResult": FieldValue.arrayRemove([deletedElement])
                     });
                     await userData['scanResult'].removeAt(index);
+                    setState(() {});
                     // setState(() {
                     //   Scaffold.of(context).showSnackBar(SnackBar(
                     //     content: Text("Deleted Successfully !!"),
@@ -243,7 +255,7 @@ class _HomeState extends State<Home> {
                     //     // ),
                     //   ));
                     // });
-                  } else {
+                  } else if (direction == DismissDirection.startToEnd) {
                     print("copy");
                   }
                 },
@@ -300,7 +312,45 @@ class _HomeState extends State<Home> {
         // },
         onPressed: () async {
           try {
+            bool soundONbool;
+            bool vibrationONbool;
             final qrCode = await BarcodeScanner.scan();
+            SharedPreferences prefsSound =
+                await SharedPreferences.getInstance();
+            SharedPreferences prefsVibration =
+                await SharedPreferences.getInstance();
+            print("kaikala");
+            try {
+              soundONbool = prefsSound.getBool("userSoundSettingState")!;
+              vibrationONbool = prefsVibration.getBool("userVibrationSettingState")!;
+            } catch (e) {
+              print("setting ma jao pela");
+              soundONbool = false;
+              vibrationONbool = false;
+            }
+            print(soundONbool);
+            print(vibrationONbool);
+            if (soundONbool) {
+              Soundpool beepQR = Soundpool(streamType: StreamType.notification);
+              int soundId = await rootBundle
+                  .load("assets/sounds/beep.ogg")
+                  .then((ByteData soundData) {
+                return beepQR.load(soundData);
+              });
+              await beepQR.play(soundId);
+            }
+            if (vibrationONbool) {
+              print("vagshe");
+              if (await Vibration.hasVibrator()) {
+                if (await Vibration.hasCustomVibrationsSupport()) {
+                  Vibration.vibrate(duration: 300);
+                } else {
+                  Vibration.vibrate();
+                }
+              }
+              // HapticFeedback.heavyImpact();
+            }
+
             setState(() {
               this.qrresult = qrCode;
             });

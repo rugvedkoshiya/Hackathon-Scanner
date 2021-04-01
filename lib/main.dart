@@ -12,9 +12,8 @@ var userData = {};
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  if (firebaseAuth.currentUser != null) {
+  if (firebaseAuth.currentUser != null && firebaseAuth.currentUser.emailVerified) {
     User user = firebaseAuth.currentUser!;
-    // print(user.email);
     userEmail = user.email!;
     await firestore.collection("users").doc(user.uid).get().then((value) {
       userData = value.data()!;

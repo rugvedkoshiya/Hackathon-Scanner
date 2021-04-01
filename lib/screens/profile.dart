@@ -201,10 +201,10 @@ class _ProfileState extends State<Profile> {
                     },
                     initialValue: '$displayName',
                     decoration: InputDecoration(
-                      contentPadding: EdgeInsets.only(bottom: 3),
-                      labelText: "Full Name",
+                      prefixIcon: Icon(Icons.person),
+                      contentPadding: EdgeInsets.only(top: 15),
                       floatingLabelBehavior: FloatingLabelBehavior.always,
-                      hintText: "Enter Your Name",
+                      hintText: "Enter your name"
                     ),
                     onChanged: (value) {
                       setState(() {
@@ -218,8 +218,9 @@ class _ProfileState extends State<Profile> {
                   child: TextField(
                     enabled: false,
                     decoration: InputDecoration(
-                      contentPadding: EdgeInsets.only(bottom: 3),
-                      labelText: "Email",
+                      prefixIcon: Icon(Icons.email_rounded),
+                      contentPadding: EdgeInsets.only(top: 15),
+                      // labelText: "Email",
                       floatingLabelBehavior: FloatingLabelBehavior.always,
                       hintText: userEmail,
                     ),
@@ -243,8 +244,9 @@ class _ProfileState extends State<Profile> {
                     },
                     initialValue: '$mobileNo',
                     decoration: InputDecoration(
-                      contentPadding: EdgeInsets.only(bottom: 3),
-                      labelText: "Mobile",
+                      prefixIcon: Icon(Icons.call),
+                      contentPadding: EdgeInsets.only(top: 15),
+                      // labelText: "Mobile",
                       floatingLabelBehavior: FloatingLabelBehavior.always,
                       hintText: "Enter Mobile Number",
                     ),

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Setting extends StatefulWidget {
   @override
@@ -10,6 +12,53 @@ class _SettingState extends State<Setting> {
   bool vibrationON = false;
 
   @override
+  void initState() {
+    super.initState();
+    getUserSetting();
+  }
+
+  getUserSetting() async {
+    soundON = await getUserSoundSettingState();
+    vibrationON = await getUserVibrationSettingState();
+    setState(() {});
+  }
+
+  Future<bool> saveUserSoundSettingState(bool value) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool("userSoundSettingState", value);
+    print('Sound Value saved $value');
+    return prefs.setBool("userSoundSettingState", value);
+  }
+
+  Future<bool> saveUserVibrationSettingState(bool value) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool("userVibrationSettingState", value);
+    print('Vibration Value saved $value');
+    return prefs.setBool("userVibrationSettingState", value);
+  }
+
+  Future<bool> getUserSoundSettingState() async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      soundON = prefs.getBool("userSoundSettingState")!;
+    } catch (e) {
+      saveUserSoundSettingState(false);
+      soundON = false;
+    }
+    return soundON;
+  }
+
+  Future<bool> getUserVibrationSettingState() async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      vibrationON = prefs.getBool("userVibrationSettingState")!;
+    } catch (e) {
+      saveUserVibrationSettingState(false);
+      vibrationON = false;
+    }
+    return vibrationON;
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -55,6 +104,7 @@ class _SettingState extends State<Setting> {
                   onChanged: (value) {
                     setState(() {
                       soundON = value;
+                      saveUserSoundSettingState(value);
                       // print(soundON);
                     });
                   },
@@ -82,6 +132,7 @@ class _SettingState extends State<Setting> {
                   onChanged: (value) {
                     setState(() {
                       vibrationON = value;
+                      saveUserVibrationSettingState(value);
                       // print(vibrationON);
                     });
                   },
@@ -179,9 +230,16 @@ class _SettingState extends State<Setting> {
             ),
             ListTile(
               // leading: Icon(Icons.policy),
-              title: Text("Version 1.0.1"),
+              title: Text("Version 1.0.3"),
               // trailing: Icon(Icons.policy),
-              onTap: () => debugPrint("Version 1.0.1"),
+              onTap: () {
+                Fluttertoast.showToast(
+                  msg: "Version 1.0.3 ~ Mr. Grey",
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.BOTTOM,
+                  timeInSecForIosWeb: 1,
+                );
+              },
             ),
             SizedBox(
               height: 20,
