@@ -1,6 +1,7 @@
 # QR Scanner
 
 ![version](https://img.shields.io/badge/version-1.0.4-blue)
+
 A QR Scanning application which saves all scanned QR codes and let you copy result whenever you want.
 
 ## Tech Stack
