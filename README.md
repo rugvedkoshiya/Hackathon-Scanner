@@ -1,6 +1,6 @@
 # QR Scanner
 
-A QR Scanning application which saves all scanned QR codes and let you copy them whenever you want.
+A QR Scanning application which saves all scanned QR codes and let you copy result whenever you want.
 
 ## Tech Stack
 
