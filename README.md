@@ -1,14 +1,24 @@
 # QR Scanner
+
 A QR Scanning application which saves all scanned QR codes and let you copy them whenever you want.
 
 ## Tech Stack
-Framework: Flutter
-Language: Dart
-Database: Firebase
+
+- ***Framework***: Flutter
+
+- ***Language***: Dart
+
+- ***Database***: Firebase
 
 ## Features
+
+<details>
+<summary>Click to see features</summary>
+
+</br>
+
 - [x] Login/Signup
-  - [x] Email validation 
+  - [x] Email validation
   - [x] Password should be between 6 to 15 character
 - [x] Forgot Password feature
   - [x] You will recieve email for resetting password
@@ -40,9 +50,17 @@ Database: Firebase
   - [x] Version information
 - [x] Logout
 
-
+</details>
 
 ## Screenshot
 
-## Available on
+<details>
+<summary>Click to see screenshots</summary>
 
+</br>
+
+<img src="./docs/screenshots/login_empty.png" height="512em" alt="Login" /><img src="./docs/screenshots/signup_empty.png" height="512em" alt="Signup"/><img src="./docs/screenshots/forgot_password_empty.png" height="512em" alt="Forgot Password"/><img src="./docs/screenshots/verify_email.png" height="512em" alt="Verify Email"/><img src="./docs/screenshots/menubar.png" height="512em" alt="Menu"/><img src="./docs/screenshots/profile.png" height="512em" alt="Profile"/><img src="./docs/screenshots/profile_choose.png" height="512em" alt="Profile Choose"/><img src="./docs/screenshots/camera_permisson.png" height="512em" alt="Camera Permission"/><img src="./docs/screenshots/profile_update.png" height="512em" alt="Profile Update"/><img src="./docs/screenshots/updated_profile.png" height="512em" alt="Updated Profile"/><img src="./docs/screenshots/change_password.png" height="512em" alt="Change Password"/><img src="./docs/screenshots/password_changed.png" height="512em" alt="Password Changed"/><img src="./docs/screenshots/setting.png" height="512em" alt="Setting"/><img src="./docs/screenshots/privacy_policy.png" height="512em" alt="Privacy Policy"/><img src="./docs/screenshots/version.png" height="512em" alt="Version"/><img src="./docs/screenshots/qr_scanning.png" height="512em" alt="QR Scanning"/><img src="./docs/screenshots/copy_swipe.gif" height="512em" alt="Copy Result"/><img src="./docs/screenshots/delete_swipe.gif" height="512em" alt="Delete Result"/>
+
+</details>
+
+## Available on
