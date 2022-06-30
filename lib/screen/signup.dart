@@ -23,22 +23,13 @@ class _SignupPageState extends State<SignupPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.green,
-        title: const Text("Hackathon Signup"),
+        title: const Text("Signup"),
       ),
       body: SingleChildScrollView(
         child: Form(
           key: _formkey,
           child: Column(
             children: <Widget>[
-              // Padding(
-              //   padding: const EdgeInsets.only(top: 60.0),
-              //   child: Center(
-              //     child: SizedBox(
-              //         width: 200,
-              //         height: 150,
-              //         child: Image.asset('asset/image/flutter_horizontal.png')),
-              //   ),
-              // ),
               Padding(
                 padding: const EdgeInsets.only(top: 50, left: 15, right: 15),
                 child: TextFormField(
