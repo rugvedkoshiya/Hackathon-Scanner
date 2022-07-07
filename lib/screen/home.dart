@@ -206,34 +206,36 @@ class _HomePageState extends State<HomePage> {
               bool soundOnbool;
               bool vibrationOnbool;
               ScanResult qrCode = await BarcodeScanner.scan();
-              SharedPreferences prefs = await SharedPreferences.getInstance();
-              soundOnbool = prefs.getBool("userSoundSettingState") ?? false;
-              vibrationOnbool =
-                  prefs.getBool("userVibrationSettingState") ?? false;
-              if (soundOnbool) {
-                Soundpool beepQR = Soundpool(streamType: StreamType.ring);
-                ByteData soundData =
-                    await rootBundle.load("asset/sound/beep.ogg");
-                int soundId = await beepQR.load(soundData);
-                beepQR.play(soundId);
-              }
-              if (vibrationOnbool) {
-                if (await Vibrate.canVibrate) {
-                  Vibrate.feedback(FeedbackType.heavy);
+              if (qrCode.rawContent != "") {
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+                soundOnbool = prefs.getBool("userSoundSettingState") ?? false;
+                vibrationOnbool =
+                    prefs.getBool("userVibrationSettingState") ?? false;
+                if (soundOnbool) {
+                  Soundpool beepQR = Soundpool(streamType: StreamType.ring);
+                  ByteData soundData =
+                      await rootBundle.load("asset/sound/beep.ogg");
+                  int soundId = await beepQR.load(soundData);
+                  beepQR.play(soundId);
                 }
+                if (vibrationOnbool) {
+                  if (await Vibrate.canVibrate) {
+                    Vibrate.feedback(FeedbackType.heavy);
+                  }
+                }
+                bool isAdded = await addData(qrCode.rawContent);
+                if (!isAdded) {
+                  Fluttertoast.showToast(
+                    msg: "Already Scanned !!",
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.BOTTOM,
+                    timeInSecForIosWeb: 1,
+                  );
+                }
+                setState(() {
+                  userData = userData;
+                });
               }
-              bool isAdded = await addData(qrCode.rawContent);
-              if (!isAdded) {
-                Fluttertoast.showToast(
-                  msg: "Already Scanned !!",
-                  toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.BOTTOM,
-                  timeInSecForIosWeb: 1,
-                );
-              }
-              setState(() {
-                userData = userData;
-              });
             } on PlatformException catch (e) {
               if (e.code == BarcodeScanner.cameraAccessDenied) {
                 setState(() {
