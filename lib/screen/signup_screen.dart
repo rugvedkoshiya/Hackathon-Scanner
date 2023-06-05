@@ -1,21 +1,19 @@
-// ignore_for_file: use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously, empty_catches
 
 import 'package:another_flushbar/flushbar.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:qrscanner/constant/firebase_constant.dart';
-import 'package:qrscanner/screen/forgot.dart';
-import 'package:qrscanner/screen/home.dart';
-import 'package:qrscanner/screen/signup.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+class SignupScreen extends StatefulWidget {
+  const SignupScreen({Key? key}) : super(key: key);
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<SignupScreen> createState() => _SignupScreenState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _SignupScreenState extends State<SignupScreen> {
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
   String _email = "";
   String _password = "";
@@ -25,7 +23,7 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.green,
-        title: const Text("QR Scanner Login"),
+        title: const Text("Signup"),
       ),
       body: SingleChildScrollView(
         child: Form(
@@ -35,6 +33,7 @@ class _LoginPageState extends State<LoginPage> {
               Padding(
                 padding: const EdgeInsets.only(top: 50, left: 15, right: 15),
                 child: TextFormField(
+                  // autovalidate: true,
                   validator: (value) {
                     if (value!.isEmpty) {
                       return "Enter Email";
@@ -89,16 +88,22 @@ class _LoginPageState extends State<LoginPage> {
                   },
                 ),
               ),
-              TextButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const ForgotPage()),
-                  );
-                },
-                child: const Text(
-                  'Forgot Password',
-                  style: TextStyle(color: Colors.green, fontSize: 15),
+              Padding(
+                padding: const EdgeInsets.only(
+                    left: 15.0, right: 15.0, top: 15, bottom: 15),
+                child: TextFormField(
+                  validator: (value) {
+                    if (value != _password) {
+                      return "Password does not match";
+                    }
+                    return null;
+                  },
+                  obscureText: true,
+                  decoration: const InputDecoration(
+                      prefixIcon: Icon(Icons.password_rounded),
+                      border: OutlineInputBorder(),
+                      labelText: 'Conform Password',
+                      hintText: 'Enter password again'),
                 ),
               ),
               ElevatedButton(
@@ -113,48 +118,35 @@ class _LoginPageState extends State<LoginPage> {
                 onPressed: () async {
                   if (_formkey.currentState!.validate()) {
                     try {
-                      await firebaseAuth.signInWithEmailAndPassword(
-                          email: _email, password: _password);
-                      User user = firebaseAuth.currentUser!;
-                      if (user.emailVerified) {
-                        Navigator.of(context).pop();
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const HomePage()),
-                        );
-                      } else {
-                        user.sendEmailVerification();
-                        await firebaseAuth.signOut();
-                        setState(() {});
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext contex) {
-                            return AlertDialog(
-                              title: const Text("Verify Your Email"),
-                              content: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: const [
-                                  Padding(
-                                    padding: EdgeInsets.only(bottom: 25),
-                                    child: Text(
-                                      "A verification mail has been sent to your email",
-                                      style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w500),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
-                        );
+                      UserCredential userCredential =
+                          await firebaseAuth.createUserWithEmailAndPassword(
+                              email: _email, password: _password);
+                      User user = userCredential.user!;
+                      if (!user.emailVerified) {
+                        await user.sendEmailVerification();
                       }
+                      await fireStore.collection("users").doc(user.uid).set({
+                        "displayName": "",
+                        "mobileNo": int.parse("0"),
+                        "scanResult": [],
+                      }, SetOptions(merge: true));
+                      await firebaseAuth.signOut();
+                      Navigator.of(context).pop();
+                      Flushbar(
+                        title: "Successfully Registerd",
+                        message: "Verify your Email for Login",
+                        icon: const Icon(
+                          Icons.check_circle_rounded,
+                          size: 28.0,
+                          color: Colors.green,
+                        ),
+                        duration: const Duration(seconds: 3),
+                      ).show(context);
                     } on FirebaseAuthException catch (e) {
-                      if (e.code == 'user-not-found') {
+                      if (e.code == 'weak-password') {
                         Flushbar(
-                          title: "User Not Found !",
-                          message: "Email is not registerd! Signup now",
+                          title: "Weak Password!!",
+                          message: "Try to make secure password",
                           icon: const Icon(
                             Icons.error,
                             size: 28.0,
@@ -162,32 +154,10 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                           duration: const Duration(seconds: 3),
                         ).show(context);
-                      } else if (e.code == 'wrong-password') {
+                      } else if (e.code == 'email-already-in-use') {
                         Flushbar(
-                          title: "Wrong Password !",
-                          message: "Forgot password for recovery",
-                          icon: const Icon(
-                            Icons.error,
-                            size: 28.0,
-                            color: Colors.red,
-                          ),
-                          duration: const Duration(seconds: 3),
-                        ).show(context);
-                      } else if (e.code == 'too-many-requests') {
-                        Flushbar(
-                          title: "Too Many Requests !",
-                          message: "Try after some time",
-                          icon: const Icon(
-                            Icons.error,
-                            size: 28.0,
-                            color: Colors.red,
-                          ),
-                          duration: const Duration(seconds: 3),
-                        ).show(context);
-                      } else {
-                        Flushbar(
-                          title: "Internal Error !",
-                          message: "Try after some time",
+                          title: "Account Exist!!",
+                          message: "This email is already exist! try Login",
                           icon: const Icon(
                             Icons.error,
                             size: 28.0,
@@ -196,26 +166,22 @@ class _LoginPageState extends State<LoginPage> {
                           duration: const Duration(seconds: 3),
                         ).show(context);
                       }
-                    }
-                  } else {}
+                    } catch (e) {}
+                  }
                 },
                 child: const Text(
-                  'Login',
+                  'Signup',
                   style: TextStyle(color: Colors.white, fontSize: 25),
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(top: 20.0),
+                padding: const EdgeInsets.only(top: 20),
                 child: TextButton(
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const SignupPage()),
-                    );
+                    Navigator.of(context).pop();
                   },
                   child: const Text(
-                    'New User? Create Account',
+                    'Already have an account? Login',
                     style: TextStyle(color: Colors.green, fontSize: 15),
                   ),
                 ),

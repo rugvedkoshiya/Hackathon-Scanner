@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class SettingPage extends StatefulWidget {
-  const SettingPage({Key? key}) : super(key: key);
+class SettingScreen extends StatefulWidget {
+  const SettingScreen({Key? key}) : super(key: key);
 
   @override
-  State<SettingPage> createState() => _SettingPageState();
+  State<SettingScreen> createState() => _SettingScreenState();
 }
 
-class _SettingPageState extends State<SettingPage> {
+class _SettingScreenState extends State<SettingScreen> {
   bool soundOn = false;
   bool vibrationOn = false;
 

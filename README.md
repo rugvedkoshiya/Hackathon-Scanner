@@ -6,7 +6,7 @@ A QR Scanning application which saves all scanned QR codes and let you copy resu
 
 ## Tech Stack
 
-- ***Framework***: Flutter
+- ***Framework***: Flutter `3.10.3`
 
 - ***Language***: Dart
 

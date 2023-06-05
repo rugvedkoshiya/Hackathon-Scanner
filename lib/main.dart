@@ -1,9 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:qrscanner/constant/firebase_constant.dart';
+import 'package:qrscanner/constant/string_constant.dart';
 import 'package:qrscanner/repository/request.repository.dart';
-import 'package:qrscanner/screen/home.dart';
-import 'package:qrscanner/screen/login.dart';
+import 'package:qrscanner/screen/home_screen.dart';
+import 'package:qrscanner/screen/login_screen.dart';
 
 bool isLogin = false;
 
@@ -24,12 +25,12 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'QR Scanner',
+      title: StaticString.appName,
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
       debugShowCheckedModeBanner: false,
-      home: isLogin ? const HomePage() : const LoginPage(),
+      home: isLogin ? const HomeScreen() : const LoginScreen(),
     );
   }
 }

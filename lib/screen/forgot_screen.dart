@@ -3,16 +3,16 @@
 import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:qrscanner/repository/request.repository.dart';
-import 'package:qrscanner/screen/signup.dart';
+import 'package:qrscanner/screen/signup_screen.dart';
 
-class ForgotPage extends StatefulWidget {
-  const ForgotPage({Key? key}) : super(key: key);
+class ForgotScreen extends StatefulWidget {
+  const ForgotScreen({Key? key}) : super(key: key);
 
   @override
-  State<ForgotPage> createState() => _ForgotPageState();
+  State<ForgotScreen> createState() => _ForgotScreenState();
 }
 
-class _ForgotPageState extends State<ForgotPage> {
+class _ForgotScreenState extends State<ForgotScreen> {
   final GlobalKey<FormState> _formForgotKey = GlobalKey<FormState>();
   String email = "";
 
@@ -66,7 +66,8 @@ class _ForgotPageState extends State<ForgotPage> {
                       Navigator.of(context).pop();
                       Flushbar(
                         title: "Email Sent",
-                        message: "Password Reset Link has been sended to your email",
+                        message:
+                            "Password Reset Link has been sended to your email",
                         icon: const Icon(
                           Icons.check_circle_outline_rounded,
                           size: 28.0,
@@ -98,7 +99,9 @@ class _ForgotPageState extends State<ForgotPage> {
                   Navigator.of(context).pop();
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const SignupPage()),
+                    MaterialPageRoute(
+                      builder: (context) => const SignupScreen(),
+                    ),
                   );
                 },
                 child: const Text(

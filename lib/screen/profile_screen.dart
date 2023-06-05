@@ -9,19 +9,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:qrscanner/constant/firebase_constant.dart';
-import 'package:qrscanner/model/user.data.model.dart';
+import 'package:qrscanner/model/user_data_model.dart';
 import 'package:qrscanner/repository/request.repository.dart';
-import 'package:qrscanner/widget/change_password.widget.dart';
+import 'package:qrscanner/widget/change_password_widget.dart';
 
-class ProfilePage extends StatefulWidget {
-  const ProfilePage({Key? key, required this.profileData}) : super(key: key);
+class ProfileScreen extends StatefulWidget {
+  const ProfileScreen({Key? key, required this.profileData}) : super(key: key);
   final QRUserInfo profileData;
 
   @override
-  State<ProfilePage> createState() => _ProfilePageState();
+  State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
-class _ProfilePageState extends State<ProfilePage> {
+class _ProfileScreenState extends State<ProfileScreen> {
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
   final imagePicker = ImagePicker();
   File? _cameraImage;

@@ -6,27 +6,27 @@ import 'package:flutter/services.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:qrscanner/constant/firebase_constant.dart';
-import 'package:qrscanner/model/user.data.model.dart';
+import 'package:qrscanner/model/user_data_model.dart';
 import 'package:qrscanner/repository/request.repository.dart';
-import 'package:qrscanner/screen/login.dart';
-import 'package:qrscanner/screen/profile.dart';
-import 'package:qrscanner/screen/setting.dart';
-import 'package:qrscanner/widget/copy.widget.dart';
-import 'package:qrscanner/widget/delete.widget.dart';
+import 'package:qrscanner/screen/login_screen.dart';
+import 'package:qrscanner/screen/profile_screen.dart';
+import 'package:qrscanner/screen/setting_screen.dart';
+import 'package:qrscanner/widget/copy_widget.dart';
+import 'package:qrscanner/widget/delete_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:soundpool/soundpool.dart';
 
 String userEmail = 'username@example.com';
 var userUid = firebaseAuth.currentUser!.uid;
 
-class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({Key? key}) : super(key: key);
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomeScreenState extends State<HomeScreen> {
   GlobalKey<RefreshIndicatorState> refreshKey =
       GlobalKey<RefreshIndicatorState>();
   String qrResult = 'Unknown';
@@ -108,9 +108,10 @@ class _HomePageState extends State<HomePage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => ProfilePage(
-                              profileData: profileData,
-                            )),
+                      builder: (context) => ProfileScreen(
+                        profileData: profileData,
+                      ),
+                    ),
                   );
                 }),
             ListTile(
@@ -127,7 +128,9 @@ class _HomePageState extends State<HomePage> {
                 Navigator.pop(context);
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const SettingPage()),
+                  MaterialPageRoute(
+                    builder: (context) => const SettingScreen(),
+                  ),
                 );
               },
             ),
@@ -140,7 +143,9 @@ class _HomePageState extends State<HomePage> {
                 Navigator.of(context).pop();
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const LoginPage()),
+                  MaterialPageRoute(
+                    builder: (context) => const LoginScreen(),
+                  ),
                 );
               },
             ),
