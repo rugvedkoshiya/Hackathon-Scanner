@@ -109,7 +109,7 @@ Widget changePasswordAlert(BuildContext context) {
       ElevatedButton(
         style: ElevatedButton.styleFrom(
           minimumSize: const Size(100, 35),
-          primary: Colors.green,
+          backgroundColor: Colors.green,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
@@ -126,7 +126,7 @@ Widget changePasswordAlert(BuildContext context) {
       ElevatedButton(
         style: ElevatedButton.styleFrom(
           minimumSize: const Size(100, 35),
-          primary: Colors.green,
+          backgroundColor: Colors.green,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
@@ -135,7 +135,7 @@ Widget changePasswordAlert(BuildContext context) {
         onPressed: () async {
           if (formChangekey.currentState!.validate()) {
             try {
-              await changePassword(oldPass, newPass);
+              await changePassword(oldPassword: oldPass, newPassword: newPass);
               Navigator.of(context).pop();
 
               Flushbar(

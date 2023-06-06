@@ -13,28 +13,28 @@ class _SettingScreenState extends State<SettingScreen> {
   bool soundOn = false;
   bool vibrationOn = false;
 
-  void getUserSetting() async {
+  Future<void> getUserSetting() async {
     soundOn = await getUserSoundSettingState();
     vibrationOn = await getUserVibrationSettingState();
     setState(() {});
   }
 
-  Future<bool> saveUserSoundSettingState(bool value) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+  Future<bool> saveUserSoundSettingState({required bool value}) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.setBool("userSoundSettingState", value);
   }
 
-  Future<bool> saveUserVibrationSettingState(bool value) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+  Future<bool> saveUserVibrationSettingState({required bool value}) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.setBool("userVibrationSettingState", value);
   }
 
   Future<bool> getUserSoundSettingState() async {
     try {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
       soundOn = prefs.getBool("userSoundSettingState")!;
     } catch (e) {
-      await saveUserSoundSettingState(false);
+      await saveUserSoundSettingState(value: false);
       soundOn = false;
     }
     return soundOn;
@@ -42,10 +42,10 @@ class _SettingScreenState extends State<SettingScreen> {
 
   Future<bool> getUserVibrationSettingState() async {
     try {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
       vibrationOn = prefs.getBool("userVibrationSettingState")!;
     } catch (e) {
-      await saveUserVibrationSettingState(false);
+      await saveUserVibrationSettingState(value: false);
       vibrationOn = false;
     }
     return vibrationOn;
@@ -68,8 +68,8 @@ class _SettingScreenState extends State<SettingScreen> {
         padding: const EdgeInsets.only(left: 16, top: 25, right: 16),
         child: ListView(
           children: [
-            Row(
-              children: const [
+            const Row(
+              children: [
                 Icon(
                   Icons.person,
                   color: Colors.green,
@@ -94,7 +94,7 @@ class _SettingScreenState extends State<SettingScreen> {
               trailing: Switch(
                 value: soundOn,
                 onChanged: (value) async {
-                  await saveUserSoundSettingState(value);
+                  await saveUserSoundSettingState(value: value);
                   setState(() {
                     soundOn = value;
                   });
@@ -110,7 +110,7 @@ class _SettingScreenState extends State<SettingScreen> {
               trailing: Switch(
                 value: vibrationOn,
                 onChanged: (value) async {
-                  await saveUserVibrationSettingState(value);
+                  await saveUserVibrationSettingState(value: value);
                   setState(() {
                     vibrationOn = value;
                   });
@@ -122,8 +122,8 @@ class _SettingScreenState extends State<SettingScreen> {
             const SizedBox(
               height: 20,
             ),
-            Row(
-              children: const [
+            const Row(
+              children: [
                 Icon(
                   Icons.person,
                   color: Colors.green,
@@ -151,18 +151,19 @@ class _SettingScreenState extends State<SettingScreen> {
                   builder: (BuildContext context) {
                     return AlertDialog(
                       title: const Text("Privacy Policy"),
-                      content: Column(
+                      content: const Column(
                         mainAxisSize: MainAxisSize.min,
-                        children: const [
+                        children: [
                           Text(
-                              "We respect the privacy of user and we do not sell or misused your data."),
+                            "We respect the privacy of user and we do not sell or misused your data.",
+                          ),
                         ],
                       ),
                       actions: [
                         TextButton(
                           style: ElevatedButton.styleFrom(
-                            primary: Colors.green,
-                            onPrimary: Colors.white,
+                            foregroundColor: Colors.white,
+                            backgroundColor: Colors.green,
                           ),
                           onPressed: () {
                             Navigator.of(context).pop();
@@ -184,7 +185,6 @@ class _SettingScreenState extends State<SettingScreen> {
                   msg: "Version 1.0.4 ~ Mr. Grey",
                   toastLength: Toast.LENGTH_SHORT,
                   gravity: ToastGravity.BOTTOM,
-                  timeInSecForIosWeb: 1,
                 );
               },
             ),

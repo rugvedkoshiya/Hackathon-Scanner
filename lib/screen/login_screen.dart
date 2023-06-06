@@ -39,8 +39,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     if (value!.isEmpty) {
                       return "Enter Email";
                     } else if (!RegExp(
-                            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                        .hasMatch(value)) {
+                      r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+",
+                    ).hasMatch(value)) {
                       return "Enter Valid Email";
                     } else {
                       return null;
@@ -50,10 +50,11 @@ class _LoginScreenState extends State<LoginScreen> {
                     _email = email!;
                   },
                   decoration: const InputDecoration(
-                      prefixIcon: Icon(Icons.email_rounded),
-                      border: OutlineInputBorder(),
-                      labelText: 'Email',
-                      hintText: 'Enter valid email'),
+                    prefixIcon: Icon(Icons.email_rounded),
+                    border: OutlineInputBorder(),
+                    labelText: 'Email',
+                    hintText: 'Enter valid email',
+                  ),
                   onChanged: (value) {
                     setState(() {
                       _email = value;
@@ -63,7 +64,10 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               Padding(
                 padding: const EdgeInsets.only(
-                    left: 15.0, right: 15.0, top: 15, bottom: 0),
+                  left: 15.0,
+                  right: 15.0,
+                  top: 15,
+                ),
                 child: TextFormField(
                   validator: (value) {
                     if (value!.isEmpty) {
@@ -78,10 +82,11 @@ class _LoginScreenState extends State<LoginScreen> {
                   },
                   obscureText: true,
                   decoration: const InputDecoration(
-                      prefixIcon: Icon(Icons.password_rounded),
-                      border: OutlineInputBorder(),
-                      labelText: 'Password',
-                      hintText: 'Enter secure password'),
+                    prefixIcon: Icon(Icons.password_rounded),
+                    border: OutlineInputBorder(),
+                    labelText: 'Password',
+                    hintText: 'Enter secure password',
+                  ),
                   onChanged: (value) {
                     setState(() {
                       _password = value;
@@ -105,7 +110,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.green,
+                  backgroundColor: Colors.green,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
@@ -116,14 +121,17 @@ class _LoginScreenState extends State<LoginScreen> {
                   if (_formkey.currentState!.validate()) {
                     try {
                       await firebaseAuth.signInWithEmailAndPassword(
-                          email: _email, password: _password);
-                      User user = firebaseAuth.currentUser!;
+                        email: _email,
+                        password: _password,
+                      );
+                      final User user = firebaseAuth.currentUser!;
                       if (user.emailVerified) {
                         Navigator.of(context).pop();
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const HomeScreen()),
+                            builder: (context) => const HomeScreen(),
+                          ),
                         );
                       } else {
                         user.sendEmailVerification();
@@ -132,18 +140,19 @@ class _LoginScreenState extends State<LoginScreen> {
                         showDialog(
                           context: context,
                           builder: (BuildContext contex) {
-                            return AlertDialog(
-                              title: const Text("Verify Your Email"),
+                            return const AlertDialog(
+                              title: Text("Verify Your Email"),
                               content: Column(
                                 mainAxisSize: MainAxisSize.min,
-                                children: const [
+                                children: [
                                   Padding(
                                     padding: EdgeInsets.only(bottom: 25),
                                     child: Text(
                                       "A verification mail has been sent to your email",
                                       style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w500),
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500,
+                                      ),
                                     ),
                                   ),
                                 ],

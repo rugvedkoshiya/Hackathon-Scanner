@@ -15,13 +15,16 @@ class QRUserInfo {
   String? mobileNo;
   String? profileLink;
 
-  QRUserInfo(
-      {required this.displayName,
-      required this.mobileNo,
-      required this.profileLink});
+  QRUserInfo({
+    required this.displayName,
+    required this.mobileNo,
+    required this.profileLink,
+  });
 
   factory QRUserInfo.fromResponse(
-      DocumentSnapshot<Map<String, dynamic>> userInfo, String? profileLink) {
+    DocumentSnapshot<Map<String, dynamic>> userInfo,
+    String? profileLink,
+  ) {
     return QRUserInfo(
       displayName: userInfo.data()?['displayName'].toString(),
       mobileNo: userInfo.data()?['mobileNo'].toString(),

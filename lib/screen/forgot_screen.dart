@@ -2,6 +2,7 @@
 
 import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
+import 'package:qrscanner/constant/string_constant.dart';
 import 'package:qrscanner/repository/request.repository.dart';
 import 'package:qrscanner/screen/signup_screen.dart';
 
@@ -21,7 +22,7 @@ class _ForgotScreenState extends State<ForgotScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.green,
-        title: const Text("Forgot Password"),
+        title: const Text(StaticString.forgotPassword),
       ),
       body: SingleChildScrollView(
         child: Form(
@@ -30,15 +31,19 @@ class _ForgotScreenState extends State<ForgotScreen> {
             children: <Widget>[
               Padding(
                 padding: const EdgeInsets.only(
-                    left: 15.0, right: 15.0, top: 50, bottom: 15),
+                  left: 15.0,
+                  right: 15.0,
+                  top: 50,
+                  bottom: 15,
+                ),
                 child: TextFormField(
                   validator: (value) {
                     if (value!.isEmpty) {
-                      return "Enter Email";
+                      return StaticString.enterEmail;
                     } else if (!RegExp(
-                            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                        .hasMatch(value)) {
-                      return "Enter Valid Email";
+                      r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+",
+                    ).hasMatch(value)) {
+                      return StaticString.enterValidEmail;
                     } else {
                       return null;
                     }
@@ -47,9 +52,10 @@ class _ForgotScreenState extends State<ForgotScreen> {
                     email = value!;
                   },
                   decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Email',
-                      hintText: 'Enter your email'),
+                    border: OutlineInputBorder(),
+                    labelText: StaticString.email,
+                    hintText: StaticString.enterYourEmail,
+                  ),
                   onChanged: (value) {
                     setState(() {
                       email = value;
@@ -58,16 +64,15 @@ class _ForgotScreenState extends State<ForgotScreen> {
                 ),
               ),
               ElevatedButton(
-                style: ElevatedButton.styleFrom(primary: Colors.green),
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
                 onPressed: () async {
                   if (_formForgotKey.currentState!.validate()) {
                     try {
                       await sendEmailConfirmation(email);
                       Navigator.of(context).pop();
                       Flushbar(
-                        title: "Email Sent",
-                        message:
-                            "Password Reset Link has been sended to your email",
+                        title: StaticString.emailSent,
+                        message: StaticString.emailSentMsg,
                         icon: const Icon(
                           Icons.check_circle_outline_rounded,
                           size: 28.0,
@@ -77,8 +82,8 @@ class _ForgotScreenState extends State<ForgotScreen> {
                       ).show(context);
                     } catch (e) {
                       Flushbar(
-                        title: "Email not found!!",
-                        message: "Singup now",
+                        title: StaticString.emailNotFound,
+                        message: StaticString.signupNow,
                         icon: const Icon(
                           Icons.error,
                           size: 28.0,
@@ -90,7 +95,7 @@ class _ForgotScreenState extends State<ForgotScreen> {
                   }
                 },
                 child: const Text(
-                  'Reset Password',
+                  StaticString.resetPassword,
                   style: TextStyle(color: Colors.white, fontSize: 20),
                 ),
               ),
@@ -105,7 +110,7 @@ class _ForgotScreenState extends State<ForgotScreen> {
                   );
                 },
                 child: const Text(
-                  'New User? Create Account',
+                  StaticString.newUserCreateAccount,
                   style: TextStyle(color: Colors.green, fontSize: 15),
                 ),
               ),

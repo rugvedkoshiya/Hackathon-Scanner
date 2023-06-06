@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:qrscanner/constant/firebase_constant.dart';
+import 'package:qrscanner/constant/string_constant.dart';
 import 'package:qrscanner/model/user_data_model.dart';
 import 'package:qrscanner/repository/request.repository.dart';
 import 'package:qrscanner/screen/login_screen.dart';
@@ -16,8 +17,10 @@ import 'package:qrscanner/widget/delete_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:soundpool/soundpool.dart';
 
+import '../gen/assets.gen.dart';
+
 String userEmail = 'username@example.com';
-var userUid = firebaseAuth.currentUser!.uid;
+String userUid = firebaseAuth.currentUser!.uid;
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -29,24 +32,24 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   GlobalKey<RefreshIndicatorState> refreshKey =
       GlobalKey<RefreshIndicatorState>();
-  String qrResult = 'Unknown';
+  String qrResult = StaticString.unknown;
 
-  Future<bool> confirmDismiss(DismissDirection direction, index) async {
+  Future<bool> confirmDismiss(DismissDirection direction, int index) async {
     if (direction == DismissDirection.endToStart) {
       return await showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: const Text("Delete"),
-          content: const Text("Are you sure you want to Delete?"),
+          title: const Text(StaticString.delete),
+          content: const Text(StaticString.deleteMsg),
           actions: <Widget>[
             TextButton(
-              child: const Text('Cancel'),
+              child: const Text(StaticString.cancel),
               onPressed: () {
                 return Navigator.of(context).pop(false);
               },
             ),
             TextButton(
-              child: const Text("Delete"),
+              child: const Text(StaticString.delete),
               onPressed: () {
                 Navigator.of(context).pop(true);
               },
@@ -57,10 +60,9 @@ class _HomeScreenState extends State<HomeScreen> {
     } else {
       Clipboard.setData(ClipboardData(text: userData.scanResult[index]));
       Fluttertoast.showToast(
-        msg: "Copied!",
+        msg: StaticString.copied,
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
-        timeInSecForIosWeb: 1,
       );
       return false;
     }
@@ -71,24 +73,24 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.green,
-        title: const Text("QR Scanner"),
+        title: const Text(StaticString.appName),
       ),
       drawer: Drawer(
         child: ListView(
           children: <Widget>[
-            DrawerHeader(
+            const DrawerHeader(
               margin: EdgeInsets.zero,
               padding: EdgeInsets.zero,
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 color: Colors.green,
               ),
               child: Stack(
-                children: const <Widget>[
+                children: <Widget>[
                   Positioned(
                     bottom: 12.0,
                     left: 16.0,
                     child: Text(
-                      "QR Scanner",
+                      StaticString.appName,
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 20.0,
@@ -100,30 +102,31 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             ListTile(
-                leading: const Icon(Icons.person),
-                title: const Text("Profile"),
-                onTap: () async {
-                  QRUserInfo profileData = await getProfileData();
-                  Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ProfileScreen(
-                        profileData: profileData,
-                      ),
+              leading: const Icon(Icons.person),
+              title: const Text(StaticString.profile),
+              onTap: () async {
+                final QRUserInfo profileData = await getProfileData();
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ProfileScreen(
+                      profileData: profileData,
                     ),
-                  );
-                }),
+                  ),
+                );
+              },
+            ),
             ListTile(
               leading: const Icon(Icons.devices),
-              title: const Text("QR Codes"),
+              title: const Text(StaticString.qrCodes),
               onTap: () {
                 Navigator.pop(context);
               },
             ),
             ListTile(
               leading: const Icon(Icons.settings),
-              title: const Text("Settings"),
+              title: const Text(StaticString.settings),
               onTap: () {
                 Navigator.pop(context);
                 Navigator.push(
@@ -136,7 +139,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             ListTile(
               leading: const Icon(Icons.logout),
-              title: const Text("Logout"),
+              title: const Text(StaticString.logout),
               onTap: () async {
                 await firebaseAuth.signOut();
                 Navigator.of(context).pop();
@@ -160,7 +163,7 @@ class _HomeScreenState extends State<HomeScreen> {
         },
         child: FutureBuilder<bool>(
           future: setData(),
-          builder: ((context, snapshot) {
+          builder: (context, snapshot) {
             if (snapshot.hasData) {
               return ListView.builder(
                 padding: const EdgeInsets.all(20.0),
@@ -173,10 +176,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     onDismissed: (direction) async {
                       if (direction == DismissDirection.endToStart) {
                         Fluttertoast.showToast(
-                          msg: "Deleted Successfully !",
+                          msg: StaticString.deleteSuccessMsg,
                           toastLength: Toast.LENGTH_SHORT,
                           gravity: ToastGravity.BOTTOM,
-                          timeInSecForIosWeb: 1,
                         );
                         await deleteData(index);
                         setState(() {
@@ -186,7 +188,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       }
                     },
                     background: copyElement(),
-                    secondaryBackground: deleteBg(),
+                    secondaryBackground: const DeleteCardWidget(),
                     child: Card(
                       child: ListTile(
                         title: Text(userData.scanResult[index]),
@@ -200,7 +202,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: CircularProgressIndicator(),
               );
             }
-          }),
+          },
         ),
       ),
       floatingActionButton: Padding(
@@ -210,17 +212,18 @@ class _HomeScreenState extends State<HomeScreen> {
             try {
               bool soundOnbool;
               bool vibrationOnbool;
-              ScanResult qrCode = await BarcodeScanner.scan();
+              final ScanResult qrCode = await BarcodeScanner.scan();
               if (qrCode.rawContent != "") {
-                SharedPreferences prefs = await SharedPreferences.getInstance();
+                final SharedPreferences prefs =
+                    await SharedPreferences.getInstance();
                 soundOnbool = prefs.getBool("userSoundSettingState") ?? false;
                 vibrationOnbool =
                     prefs.getBool("userVibrationSettingState") ?? false;
                 if (soundOnbool) {
-                  Soundpool beepQR = Soundpool(streamType: StreamType.ring);
-                  ByteData soundData =
-                      await rootBundle.load("asset/sound/beep.ogg");
-                  int soundId = await beepQR.load(soundData);
+                  final Soundpool beepQR =
+                      Soundpool(streamType: StreamType.ring);
+                  final ByteData soundData = await rootBundle.load(Assets.sound.beep);
+                  final int soundId = await beepQR.load(soundData);
                   beepQR.play(soundId);
                 }
                 if (vibrationOnbool) {
@@ -228,13 +231,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     Vibrate.feedback(FeedbackType.heavy);
                   }
                 }
-                bool isAdded = await addData(qrCode.rawContent);
+                final bool isAdded = await addData(qrCode.rawContent);
                 if (!isAdded) {
                   Fluttertoast.showToast(
-                    msg: "Already Scanned !!",
+                    msg: StaticString.alreadyScanned,
                     toastLength: Toast.LENGTH_SHORT,
                     gravity: ToastGravity.BOTTOM,
-                    timeInSecForIosWeb: 1,
                   );
                 }
                 setState(() {
@@ -244,19 +246,19 @@ class _HomeScreenState extends State<HomeScreen> {
             } on PlatformException catch (e) {
               if (e.code == BarcodeScanner.cameraAccessDenied) {
                 setState(() {
-                  qrResult = 'No camera permission!';
+                  qrResult = StaticString.noCameraPermission;
                 });
               } else {
                 setState(() => qrResult = 'Unknown error: $e');
               }
             } on FormatException {
-              setState(() => qrResult = 'Nothing captured.');
+              setState(() => qrResult = StaticString.nothingCaptured);
             } catch (e) {
               setState(() => qrResult = 'Unknown error: $e');
             }
           },
           backgroundColor: Colors.green,
-          tooltip: "Scan QR Code",
+          tooltip: StaticString.scanQrCode,
           child: const Icon(Icons.camera_alt_rounded),
         ),
       ),

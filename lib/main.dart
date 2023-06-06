@@ -7,14 +7,16 @@ import 'package:qrscanner/screen/home_screen.dart';
 import 'package:qrscanner/screen/login_screen.dart';
 
 bool isLogin = false;
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
+BuildContext get getContext => navigatorKey.currentState!.context;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   if (firebaseAuth.currentUser != null &&
       firebaseAuth.currentUser!.emailVerified) {
-    await setData();
-    isLogin = true;
+    isLogin = await setData();
   }
   runApp(const App());
 }

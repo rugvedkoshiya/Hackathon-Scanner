@@ -38,8 +38,8 @@ class _SignupScreenState extends State<SignupScreen> {
                     if (value!.isEmpty) {
                       return "Enter Email";
                     } else if (!RegExp(
-                            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                        .hasMatch(value)) {
+                      r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+",
+                    ).hasMatch(value)) {
                       return "Enter Valid Email";
                     } else {
                       return null;
@@ -49,10 +49,11 @@ class _SignupScreenState extends State<SignupScreen> {
                     _email = email!;
                   },
                   decoration: const InputDecoration(
-                      prefixIcon: Icon(Icons.email_rounded),
-                      border: OutlineInputBorder(),
-                      labelText: 'Email',
-                      hintText: 'Enter valid email'),
+                    prefixIcon: Icon(Icons.email_rounded),
+                    border: OutlineInputBorder(),
+                    labelText: 'Email',
+                    hintText: 'Enter valid email',
+                  ),
                   onChanged: (value) {
                     setState(() {
                       _email = value;
@@ -62,7 +63,10 @@ class _SignupScreenState extends State<SignupScreen> {
               ),
               Padding(
                 padding: const EdgeInsets.only(
-                    left: 15.0, right: 15.0, top: 15, bottom: 0),
+                  left: 15.0,
+                  right: 15.0,
+                  top: 15,
+                ),
                 child: TextFormField(
                   validator: (value) {
                     if (value!.isEmpty) {
@@ -77,10 +81,11 @@ class _SignupScreenState extends State<SignupScreen> {
                   },
                   obscureText: true,
                   decoration: const InputDecoration(
-                      prefixIcon: Icon(Icons.password_rounded),
-                      border: OutlineInputBorder(),
-                      labelText: 'Password',
-                      hintText: 'Enter secure password'),
+                    prefixIcon: Icon(Icons.password_rounded),
+                    border: OutlineInputBorder(),
+                    labelText: 'Password',
+                    hintText: 'Enter secure password',
+                  ),
                   onChanged: (value) {
                     setState(() {
                       _password = value;
@@ -90,7 +95,11 @@ class _SignupScreenState extends State<SignupScreen> {
               ),
               Padding(
                 padding: const EdgeInsets.only(
-                    left: 15.0, right: 15.0, top: 15, bottom: 15),
+                  left: 15.0,
+                  right: 15.0,
+                  top: 15,
+                  bottom: 15,
+                ),
                 child: TextFormField(
                   validator: (value) {
                     if (value != _password) {
@@ -100,15 +109,16 @@ class _SignupScreenState extends State<SignupScreen> {
                   },
                   obscureText: true,
                   decoration: const InputDecoration(
-                      prefixIcon: Icon(Icons.password_rounded),
-                      border: OutlineInputBorder(),
-                      labelText: 'Conform Password',
-                      hintText: 'Enter password again'),
+                    prefixIcon: Icon(Icons.password_rounded),
+                    border: OutlineInputBorder(),
+                    labelText: 'Conform Password',
+                    hintText: 'Enter password again',
+                  ),
                 ),
               ),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.green,
+                  backgroundColor: Colors.green,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
@@ -118,18 +128,23 @@ class _SignupScreenState extends State<SignupScreen> {
                 onPressed: () async {
                   if (_formkey.currentState!.validate()) {
                     try {
-                      UserCredential userCredential =
+                      final UserCredential userCredential =
                           await firebaseAuth.createUserWithEmailAndPassword(
-                              email: _email, password: _password);
-                      User user = userCredential.user!;
+                        email: _email,
+                        password: _password,
+                      );
+                      final User user = userCredential.user!;
                       if (!user.emailVerified) {
                         await user.sendEmailVerification();
                       }
-                      await fireStore.collection("users").doc(user.uid).set({
-                        "displayName": "",
-                        "mobileNo": int.parse("0"),
-                        "scanResult": [],
-                      }, SetOptions(merge: true));
+                      await fireStore.collection("users").doc(user.uid).set(
+                        {
+                          "displayName": "",
+                          "mobileNo": int.parse("0"),
+                          "scanResult": [],
+                        },
+                        SetOptions(merge: true),
+                      );
                       await firebaseAuth.signOut();
                       Navigator.of(context).pop();
                       Flushbar(

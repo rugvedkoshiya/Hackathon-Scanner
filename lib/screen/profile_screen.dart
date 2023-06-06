@@ -24,7 +24,7 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
   final imagePicker = ImagePicker();
-  File? _cameraImage;
+  File? cameraImage;
   String displayName = "";
   String mobileNo = "";
   String profileLink = "https://i.pravatar.cc/130?img=56";
@@ -33,14 +33,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final selectedImage = await imagePicker.pickImage(source: imageSource);
     if (selectedImage != null) {
       setState(() {
-        _cameraImage = File(selectedImage.path);
+        cameraImage = File(selectedImage.path);
       });
     }
   }
 
   Future<void> uploadFileFunc(BuildContext context, File uploadFile) async {
     try {
-      var userUid = firebaseAuth.currentUser!.uid;
+      final userUid = firebaseAuth.currentUser!.uid;
       await fireStorage.ref('profiles/$userUid.png').putFile(uploadFile);
       profileLink =
           await fireStorage.ref('profiles/$userUid.png').getDownloadURL();
@@ -84,8 +84,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         height: 130,
                         decoration: BoxDecoration(
                           border: Border.all(
-                              width: 4,
-                              color: Theme.of(context).scaffoldBackgroundColor),
+                            width: 4,
+                            color: Theme.of(context).scaffoldBackgroundColor,
+                          ),
                           boxShadow: [
                             BoxShadow(
                               spreadRadius: 2,
@@ -119,7 +120,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             onTap: () {
                               showModalBottomSheet(
                                 context: context,
-                                builder: ((builder) => selectProfile()),
+                                builder: (builder) => selectProfile(),
                               );
                             },
                             child: const Icon(
@@ -150,10 +151,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     },
                     initialValue: displayName,
                     decoration: const InputDecoration(
-                        prefixIcon: Icon(Icons.person),
-                        contentPadding: EdgeInsets.only(top: 15),
-                        floatingLabelBehavior: FloatingLabelBehavior.always,
-                        hintText: "Enter your name"),
+                      prefixIcon: Icon(Icons.person),
+                      contentPadding: EdgeInsets.only(top: 15),
+                      floatingLabelBehavior: FloatingLabelBehavior.always,
+                      hintText: "Enter your name",
+                    ),
                     onChanged: (value) {
                       setState(() {
                         displayName = value;
@@ -213,10 +215,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   trailing: const Icon(Icons.security),
                   onTap: () {
                     showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return changePasswordAlert(context);
-                        });
+                      context: context,
+                      builder: (BuildContext context) {
+                        return changePasswordAlert(context);
+                      },
+                    );
                   },
                 ),
                 Padding(
@@ -227,12 +230,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size(130, 35),
-                          primary: Colors.green,
+                          backgroundColor: Colors.green,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20),
                           ),
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 25, vertical: 10),
+                            horizontal: 25,
+                            vertical: 10,
+                          ),
                         ),
                         onPressed: () {
                           Navigator.of(context).pop();
@@ -240,20 +245,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         child: const Text(
                           "CANCEL",
                           style: TextStyle(
-                              fontSize: 14,
-                              letterSpacing: 2.2,
-                              color: Colors.white),
+                            fontSize: 14,
+                            letterSpacing: 2.2,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size(130, 35),
-                          primary: Colors.green,
+                          backgroundColor: Colors.green,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20),
                           ),
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 25, vertical: 10),
+                            horizontal: 25,
+                            vertical: 10,
+                          ),
                         ),
                         onPressed: () async {
                           if (_formkey.currentState!.validate()) {
@@ -293,66 +301,69 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Widget selectProfile() {
     return Container(
-        height: 100.0,
-        width: MediaQuery.of(context).size.width,
-        margin: const EdgeInsets.symmetric(
-          horizontal: 20,
-          vertical: 20,
-        ),
-        child: Column(
-          children: <Widget>[
-            const Text(
-              "Choose Image From",
-              style: TextStyle(
-                fontSize: 20,
-              ),
+      height: 100.0,
+      width: MediaQuery.of(context).size.width,
+      margin: const EdgeInsets.symmetric(
+        horizontal: 20,
+        vertical: 20,
+      ),
+      child: Column(
+        children: <Widget>[
+          const Text(
+            "Choose Image From",
+            style: TextStyle(
+              fontSize: 20,
             ),
-            const SizedBox(
-              height: 20,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                TextButton.icon(
-                  style: ElevatedButton.styleFrom(
-                      onPrimary: Colors.black.withOpacity(0.8)),
-                  icon: const Icon(Icons.photo_camera_rounded),
-                  onPressed: () async {
-                    try {
-                      await getImageFromPhone(ImageSource.camera);
-                      await uploadFileFunc(context, _cameraImage!);
-                      Navigator.pop(context);
-                    } catch (e) {
-                      Flushbar(
-                        title: "Could Not Update Profile",
-                        message: "Select Smaller Image",
-                        icon: const Icon(
-                          Icons.error,
-                          size: 28.0,
-                          color: Colors.red,
-                        ),
-                        duration: const Duration(seconds: 3),
-                      ).show(context);
-                    }
-                  },
-                  label: const Text("Camera"),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              TextButton.icon(
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.black.withOpacity(0.8),
                 ),
-                TextButton.icon(
-                  style: ElevatedButton.styleFrom(
-                      onPrimary: Colors.black.withOpacity(0.8)),
-                  icon: const Icon(Icons.image_rounded),
-                  onPressed: () async {
-                    try {
-                      await getImageFromPhone(ImageSource.gallery);
-                      await uploadFileFunc(context, _cameraImage!);
-                      Navigator.pop(context);
-                    } catch (e) {}
-                  },
-                  label: const Text("Gallary"),
-                )
-              ],
-            ),
-          ],
-        ));
+                icon: const Icon(Icons.photo_camera_rounded),
+                onPressed: () async {
+                  try {
+                    await getImageFromPhone(ImageSource.camera);
+                    await uploadFileFunc(context, cameraImage!);
+                    Navigator.pop(context);
+                  } catch (e) {
+                    Flushbar(
+                      title: "Could Not Update Profile",
+                      message: "Select Smaller Image",
+                      icon: const Icon(
+                        Icons.error,
+                        size: 28.0,
+                        color: Colors.red,
+                      ),
+                      duration: const Duration(seconds: 3),
+                    ).show(context);
+                  }
+                },
+                label: const Text("Camera"),
+              ),
+              TextButton.icon(
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.black.withOpacity(0.8),
+                ),
+                icon: const Icon(Icons.image_rounded),
+                onPressed: () async {
+                  try {
+                    await getImageFromPhone(ImageSource.gallery);
+                    await uploadFileFunc(context, cameraImage!);
+                    Navigator.pop(context);
+                  } catch (e) {}
+                },
+                label: const Text("Gallary"),
+              )
+            ],
+          ),
+        ],
+      ),
+    );
   }
 }
