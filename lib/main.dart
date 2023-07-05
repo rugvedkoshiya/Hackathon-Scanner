@@ -29,7 +29,7 @@ class App extends StatelessWidget {
     return MaterialApp(
       title: StaticString.appName,
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.green,
       ),
       debugShowCheckedModeBanner: false,
       home: isLogin ? const HomeScreen() : const LoginScreen(),

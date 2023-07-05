@@ -72,17 +72,22 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.green,
-        title: const Text(StaticString.appName),
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        title: Text(
+          StaticString.appName,
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                color: Theme.of(context).colorScheme.onPrimary,
+              ),
+        ),
       ),
       drawer: Drawer(
         child: ListView(
           children: <Widget>[
-            const DrawerHeader(
+            DrawerHeader(
               margin: EdgeInsets.zero,
               padding: EdgeInsets.zero,
               decoration: BoxDecoration(
-                color: Colors.green,
+                color: Theme.of(context).colorScheme.primary,
               ),
               child: Stack(
                 children: <Widget>[
@@ -92,7 +97,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Text(
                       StaticString.appName,
                       style: TextStyle(
-                        color: Colors.white,
+                        color: Theme.of(context).colorScheme.onPrimary,
                         fontSize: 20.0,
                         fontWeight: FontWeight.w500,
                       ),
@@ -222,7 +227,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 if (soundOnbool) {
                   final Soundpool beepQR =
                       Soundpool(streamType: StreamType.ring);
-                  final ByteData soundData = await rootBundle.load(Assets.sound.beep);
+                  final ByteData soundData =
+                      await rootBundle.load(Assets.sound.beep);
                   final int soundId = await beepQR.load(soundData);
                   beepQR.play(soundId);
                 }
@@ -257,7 +263,6 @@ class _HomeScreenState extends State<HomeScreen> {
               setState(() => qrResult = 'Unknown error: $e');
             }
           },
-          backgroundColor: Colors.green,
           tooltip: StaticString.scanQrCode,
           child: const Icon(Icons.camera_alt_rounded),
         ),

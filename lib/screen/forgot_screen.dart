@@ -21,84 +21,57 @@ class _ForgotScreenState extends State<ForgotScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.green,
         title: const Text(StaticString.forgotPassword),
       ),
       body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
         child: Form(
           key: _formForgotKey,
           child: Column(
             children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(
-                  left: 15.0,
-                  right: 15.0,
-                  top: 50,
-                  bottom: 15,
-                ),
-                child: TextFormField(
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return StaticString.enterEmail;
-                    } else if (!RegExp(
-                      r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+",
-                    ).hasMatch(value)) {
-                      return StaticString.enterValidEmail;
-                    } else {
-                      return null;
-                    }
-                  },
-                  onSaved: (value) {
-                    email = value!;
-                  },
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: StaticString.email,
-                    hintText: StaticString.enterYourEmail,
-                  ),
-                  onChanged: (value) {
-                    setState(() {
-                      email = value;
-                    });
-                  },
-                ),
-              ),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
-                onPressed: () async {
-                  if (_formForgotKey.currentState!.validate()) {
-                    try {
-                      await sendEmailConfirmation(email);
-                      Navigator.of(context).pop();
-                      Flushbar(
-                        title: StaticString.emailSent,
-                        message: StaticString.emailSentMsg,
-                        icon: const Icon(
-                          Icons.check_circle_outline_rounded,
-                          size: 28.0,
-                          color: Colors.green,
-                        ),
-                        duration: const Duration(seconds: 3),
-                      ).show(context);
-                    } catch (e) {
-                      Flushbar(
-                        title: StaticString.emailNotFound,
-                        message: StaticString.signupNow,
-                        icon: const Icon(
-                          Icons.error,
-                          size: 28.0,
-                          color: Colors.red,
-                        ),
-                        duration: const Duration(seconds: 3),
-                      ).show(context);
-                    }
+              TextFormField(
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return StaticString.enterEmail;
+                  } else if (!RegExp(
+                    r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+",
+                  ).hasMatch(value)) {
+                    return StaticString.enterValidEmail;
+                  } else {
+                    return null;
                   }
                 },
+                onSaved: (value) {
+                  email = value!;
+                },
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: StaticString.email,
+                  hintText: StaticString.enterYourEmail,
+                ),
+                onChanged: (value) {
+                  setState(() {
+                    email = value;
+                  });
+                },
+              ),
+              const SizedBox(height: 30),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                ),
+                onPressed: submitFunc,
                 child: const Text(
                   StaticString.resetPassword,
                   style: TextStyle(color: Colors.white, fontSize: 20),
                 ),
               ),
+              const SizedBox(height: 10),
               TextButton(
                 onPressed: () {
                   Navigator.of(context).pop();
@@ -119,5 +92,35 @@ class _ForgotScreenState extends State<ForgotScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> submitFunc() async {
+    if (_formForgotKey.currentState!.validate()) {
+      try {
+        await sendEmailConfirmation(email);
+        Navigator.of(context).pop();
+        Flushbar(
+          title: StaticString.emailSent,
+          message: StaticString.emailSentMsg,
+          icon: const Icon(
+            Icons.check_circle_outline_rounded,
+            size: 28.0,
+            color: Colors.green,
+          ),
+          duration: const Duration(seconds: 3),
+        ).show(context);
+      } catch (e) {
+        Flushbar(
+          title: StaticString.emailNotFound,
+          message: StaticString.signupNow,
+          icon: const Icon(
+            Icons.error,
+            size: 28.0,
+            color: Colors.red,
+          ),
+          duration: const Duration(seconds: 3),
+        ).show(context);
+      }
+    }
   }
 }
