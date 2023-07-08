@@ -1,1 +1,21 @@
-{}
+{
+  "gu": [
+    "email",
+    "emailHint",
+    "password",
+    "passwordHint",
+    "emptyPassword",
+    "validPassword",
+    "forgotPassword",
+    "login",
+    "newUserCreateAccount",
+    "verifyYourEmail",
+    "verifyYourEmailMsg",
+    "signup",
+    "emptyConfirmPassword",
+    "passwordDoNotMatch",
+    "confirmPassword",
+    "confirmPasswordHint",
+    "alreadyHavenAnAccountLogin"
+  ]
+}

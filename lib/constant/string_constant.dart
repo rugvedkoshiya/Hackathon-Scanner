@@ -27,3 +27,7 @@ class StaticString {
   static const String nothingCaptured = "Nothing captured";
   static const String scanQrCode = "Scan QR Code";
 }
+
+class CustomFont {
+  static const String outfit = 'Outfit';
+}

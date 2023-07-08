@@ -5,6 +5,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:qrscanner/constant/firebase_constant.dart';
+import 'package:qrscanner/screen/login_screen.dart';
+import 'package:qrscanner/utils/custom_extension.dart';
+import 'package:qrscanner/widget/cust_elevated_button.dart';
+
+import '../gen/app_localizations.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({Key? key}) : super(key: key);
@@ -22,8 +27,14 @@ class _SignupScreenState extends State<SignupScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.green,
-        title: const Text("Signup"),
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        centerTitle: true,
+        title: Text(
+          AppLocalizations.of(context).signup,
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                color: Theme.of(context).colorScheme.onPrimary,
+              ),
+        ),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -33,25 +44,15 @@ class _SignupScreenState extends State<SignupScreen> {
             children: <Widget>[
               TextFormField(
                 // autovalidate: true,
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return "Enter Email";
-                  } else if (!RegExp(
-                    r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+",
-                  ).hasMatch(value)) {
-                    return "Enter Valid Email";
-                  } else {
-                    return null;
-                  }
-                },
+                validator: (value) => value?.validateEmail,
                 onSaved: (email) {
                   _email = email!;
                 },
-                decoration: const InputDecoration(
-                  prefixIcon: Icon(Icons.email_rounded),
-                  border: OutlineInputBorder(),
-                  labelText: 'Email',
-                  hintText: 'Enter valid email',
+                decoration: InputDecoration(
+                  prefixIcon: const Icon(Icons.email_rounded),
+                  border: const OutlineInputBorder(),
+                  labelText: AppLocalizations.of(context).email,
+                  hintText: AppLocalizations.of(context).emailHint,
                 ),
                 onChanged: (value) {
                   setState(() {
@@ -61,23 +62,13 @@ class _SignupScreenState extends State<SignupScreen> {
               ),
               const SizedBox(height: 10),
               TextFormField(
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return "* Required";
-                  } else if (value.length < 6) {
-                    return "Password should be atleast 6 characters";
-                  } else if (value.length > 15) {
-                    return "Password should not be greater than 15 characters";
-                  } else {
-                    return null;
-                  }
-                },
+                validator: (value) => value?.validatePassword,
                 obscureText: true,
-                decoration: const InputDecoration(
-                  prefixIcon: Icon(Icons.password_rounded),
-                  border: OutlineInputBorder(),
-                  labelText: 'Password',
-                  hintText: 'Enter secure password',
+                decoration: InputDecoration(
+                  prefixIcon: const Icon(Icons.password_rounded),
+                  border: const OutlineInputBorder(),
+                  labelText: AppLocalizations.of(context).password,
+                  hintText: AppLocalizations.of(context).passwordHint,
                 ),
                 onChanged: (value) {
                   setState(() {
@@ -87,44 +78,36 @@ class _SignupScreenState extends State<SignupScreen> {
               ),
               const SizedBox(height: 10),
               TextFormField(
-                validator: (value) {
-                  if (value != _password) {
-                    return "Password does not match";
-                  }
-                  return null;
-                },
+                validator: (value) => value?.validateConfrimPassword(
+                  confirmPasswordVal: _password,
+                ),
                 obscureText: true,
-                decoration: const InputDecoration(
-                  prefixIcon: Icon(Icons.password_rounded),
-                  border: OutlineInputBorder(),
-                  labelText: 'Conform Password',
-                  hintText: 'Enter password again',
+                decoration: InputDecoration(
+                  prefixIcon: const Icon(Icons.password_rounded),
+                  border: const OutlineInputBorder(),
+                  labelText: AppLocalizations.of(context).confirmPassword,
+                  hintText: AppLocalizations.of(context).confirmPasswordHint,
                 ),
               ),
               const SizedBox(height: 30),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                ),
+              CustElevatedButton(
                 onPressed: submitFunc,
-                child: const Text(
-                  'Signup',
-                  style: TextStyle(color: Colors.white, fontSize: 25),
-                ),
+                btnText: AppLocalizations.of(context).signup,
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 20),
               TextButton(
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(
+                      builder: (context) => const LoginScreen(),
+                    ),
+                  );
                 },
-                child: const Text(
-                  'Already have an account? Login',
-                  style: TextStyle(color: Colors.green, fontSize: 15),
+                child: Text(
+                  AppLocalizations.of(context).alreadyHavenAnAccountLogin,
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
                 ),
               ),
             ],

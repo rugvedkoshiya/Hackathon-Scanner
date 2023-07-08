@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:qrscanner/constant/string_constant.dart';
 import 'package:qrscanner/repository/request.repository.dart';
 import 'package:qrscanner/screen/signup_screen.dart';
+import 'package:qrscanner/utils/custom_extension.dart';
+import 'package:qrscanner/widget/cust_elevated_button.dart';
 
 class ForgotScreen extends StatefulWidget {
   const ForgotScreen({Key? key}) : super(key: key);
@@ -30,17 +32,7 @@ class _ForgotScreenState extends State<ForgotScreen> {
           child: Column(
             children: <Widget>[
               TextFormField(
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return StaticString.enterEmail;
-                  } else if (!RegExp(
-                    r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+",
-                  ).hasMatch(value)) {
-                    return StaticString.enterValidEmail;
-                  } else {
-                    return null;
-                  }
-                },
+                validator: (value) => value?.validateEmail,
                 onSaved: (value) {
                   email = value!;
                 },
@@ -56,35 +48,24 @@ class _ForgotScreenState extends State<ForgotScreen> {
                 },
               ),
               const SizedBox(height: 30),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                ),
+              CustElevatedButton(
                 onPressed: submitFunc,
-                child: const Text(
-                  StaticString.resetPassword,
-                  style: TextStyle(color: Colors.white, fontSize: 20),
-                ),
+                btnText: StaticString.resetPassword,
               ),
               const SizedBox(height: 10),
               TextButton(
                 onPressed: () {
-                  Navigator.of(context).pop();
-                  Navigator.push(
-                    context,
+                  Navigator.of(context).pushReplacement(
                     MaterialPageRoute(
                       builder: (context) => const SignupScreen(),
                     ),
                   );
                 },
-                child: const Text(
+                child: Text(
                   StaticString.newUserCreateAccount,
-                  style: TextStyle(color: Colors.green, fontSize: 15),
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
                 ),
               ),
             ],
@@ -102,10 +83,10 @@ class _ForgotScreenState extends State<ForgotScreen> {
         Flushbar(
           title: StaticString.emailSent,
           message: StaticString.emailSentMsg,
-          icon: const Icon(
+          icon: Icon(
             Icons.check_circle_outline_rounded,
             size: 28.0,
-            color: Colors.green,
+            color: Theme.of(context).colorScheme.primary,
           ),
           duration: const Duration(seconds: 3),
         ).show(context);
@@ -113,10 +94,10 @@ class _ForgotScreenState extends State<ForgotScreen> {
         Flushbar(
           title: StaticString.emailNotFound,
           message: StaticString.signupNow,
-          icon: const Icon(
+          icon: Icon(
             Icons.error,
             size: 28.0,
-            color: Colors.red,
+            color: Theme.of(context).colorScheme.error,
           ),
           duration: const Duration(seconds: 3),
         ).show(context);

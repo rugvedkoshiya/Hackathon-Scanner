@@ -16,7 +16,7 @@ import 'app_localizations_gu.dart';
 /// `supportedLocales` list. For example:
 ///
 /// ```dart
-/// import 'fonts/app_localizations.dart';
+/// import 'gen/app_localizations.dart';
 ///
 /// return MaterialApp(
 ///   localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -110,6 +110,126 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Settings'**
   String get settings;
+
+  /// No description provided for @appName.
+  ///
+  /// In en, this message translates to:
+  /// **'QR Scanner'**
+  String get appName;
+
+  /// No description provided for @email.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get email;
+
+  /// No description provided for @emailHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter email'**
+  String get emailHint;
+
+  /// No description provided for @emptyEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter email'**
+  String get emptyEmail;
+
+  /// No description provided for @validEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter valid email'**
+  String get validEmail;
+
+  /// No description provided for @password.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get password;
+
+  /// No description provided for @passwordHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter password'**
+  String get passwordHint;
+
+  /// No description provided for @emptyPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter password'**
+  String get emptyPassword;
+
+  /// No description provided for @validPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter valid password'**
+  String get validPassword;
+
+  /// No description provided for @forgotPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Forgot password'**
+  String get forgotPassword;
+
+  /// No description provided for @login.
+  ///
+  /// In en, this message translates to:
+  /// **'Login'**
+  String get login;
+
+  /// No description provided for @newUserCreateAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'New User? Create Account'**
+  String get newUserCreateAccount;
+
+  /// No description provided for @verifyYourEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify Your Email'**
+  String get verifyYourEmail;
+
+  /// No description provided for @verifyYourEmailMsg.
+  ///
+  /// In en, this message translates to:
+  /// **'A verification mail has been sent to your email'**
+  String get verifyYourEmailMsg;
+
+  /// No description provided for @signup.
+  ///
+  /// In en, this message translates to:
+  /// **'Signup'**
+  String get signup;
+
+  /// No description provided for @emptyConfirmPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter confirm password'**
+  String get emptyConfirmPassword;
+
+  /// No description provided for @passwordDoNotMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Password does not match'**
+  String get passwordDoNotMatch;
+
+  /// No description provided for @confirmPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Password'**
+  String get confirmPassword;
+
+  /// No description provided for @confirmPasswordHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter password again'**
+  String get confirmPasswordHint;
+
+  /// No description provided for @alreadyHavenAnAccountLogin.
+  ///
+  /// In en, this message translates to:
+  /// **'Already have an account? Login'**
+  String get alreadyHavenAnAccountLogin;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

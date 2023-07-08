@@ -7,6 +7,10 @@ import 'package:qrscanner/constant/firebase_constant.dart';
 import 'package:qrscanner/screen/forgot_screen.dart';
 import 'package:qrscanner/screen/home_screen.dart';
 import 'package:qrscanner/screen/signup_screen.dart';
+import 'package:qrscanner/utils/custom_extension.dart';
+
+import '../gen/app_localizations.dart';
+import '../widget/cust_elevated_button.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -16,6 +20,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  // Variables
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
   String _email = "";
   String _password = "";
@@ -24,8 +29,14 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.green,
-        title: const Text("QR Scanner Login"),
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        centerTitle: true,
+        title: Text(
+          AppLocalizations.of(context).appName,
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                color: Theme.of(context).colorScheme.onPrimary,
+              ),
+        ),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -33,26 +44,17 @@ class _LoginScreenState extends State<LoginScreen> {
           key: _formkey,
           child: Column(
             children: <Widget>[
+              // Email field
               TextFormField(
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return "Enter Email";
-                  } else if (!RegExp(
-                    r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+",
-                  ).hasMatch(value)) {
-                    return "Enter Valid Email";
-                  } else {
-                    return null;
-                  }
-                },
+                validator: (value) => value?.validateEmail,
                 onSaved: (email) {
                   _email = email!;
                 },
-                decoration: const InputDecoration(
-                  prefixIcon: Icon(Icons.email_rounded),
-                  border: OutlineInputBorder(),
-                  labelText: 'Email',
-                  hintText: 'Enter valid email',
+                decoration: InputDecoration(
+                  prefixIcon: const Icon(Icons.email_rounded),
+                  border: const OutlineInputBorder(),
+                  labelText: AppLocalizations.of(context).email,
+                  hintText: AppLocalizations.of(context).emailHint,
                 ),
                 onChanged: (value) {
                   setState(() {
@@ -61,24 +63,16 @@ class _LoginScreenState extends State<LoginScreen> {
                 },
               ),
               const SizedBox(height: 10),
+
+              // Password field
               TextFormField(
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return "* Required";
-                  } else if (value.length < 6) {
-                    return "Password should be atleast 6 characters";
-                  } else if (value.length > 15) {
-                    return "Password should not be greater than 15 characters";
-                  } else {
-                    return null;
-                  }
-                },
+                validator: (value) => value?.validatePassword,
                 obscureText: true,
-                decoration: const InputDecoration(
-                  prefixIcon: Icon(Icons.password_rounded),
-                  border: OutlineInputBorder(),
-                  labelText: 'Password',
-                  hintText: 'Enter secure password',
+                decoration: InputDecoration(
+                  prefixIcon: const Icon(Icons.password_rounded),
+                  border: const OutlineInputBorder(),
+                  labelText: AppLocalizations.of(context).password,
+                  hintText: AppLocalizations.of(context).passwordHint,
                 ),
                 onChanged: (value) {
                   setState(() {
@@ -87,6 +81,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 },
               ),
               const SizedBox(height: 10),
+
+              // Forgot password field
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
@@ -99,40 +95,34 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       );
                     },
-                    child: const Text(
-                      'Forgot Password',
-                      style: TextStyle(color: Colors.green, fontSize: 15),
+                    child: Text(
+                      AppLocalizations.of(context).forgotPassword,
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
                     ),
                   ),
                 ],
               ),
               const SizedBox(height: 30),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                ),
+
+              // Login button
+              CustElevatedButton(
                 onPressed: submitFunc,
-                child: const Text(
-                  'Login',
-                  style: TextStyle(color: Colors.white, fontSize: 25),
-                ),
+                btnText: AppLocalizations.of(context).login,
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 20),
               TextButton(
-                onPressed: () => Navigator.push(
-                  context,
+                onPressed: () => Navigator.of(context).pushReplacement(
                   MaterialPageRoute(
                     builder: (context) => const SignupScreen(),
                   ),
                 ),
-                child: const Text(
-                  'New User? Create Account',
-                  style: TextStyle(color: Colors.green, fontSize: 15),
+                child: Text(
+                  AppLocalizations.of(context).newUserCreateAccount,
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
                 ),
               ),
             ],
@@ -151,9 +141,7 @@ class _LoginScreenState extends State<LoginScreen> {
         );
         final User user = firebaseAuth.currentUser!;
         if (user.emailVerified) {
-          Navigator.of(context).pop();
-          Navigator.push(
-            context,
+          Navigator.of(context).pushReplacement(
             MaterialPageRoute(
               builder: (context) => const HomeScreen(),
             ),
@@ -165,19 +153,16 @@ class _LoginScreenState extends State<LoginScreen> {
           showDialog(
             context: context,
             builder: (BuildContext contex) {
-              return const AlertDialog(
-                title: Text("Verify Your Email"),
+              return AlertDialog(
+                title: Text(AppLocalizations.of(context).verifyYourEmail),
                 content: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Padding(
-                      padding: EdgeInsets.only(bottom: 25),
+                      padding: const EdgeInsets.only(bottom: 24),
                       child: Text(
-                        "A verification mail has been sent to your email",
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                        ),
+                        AppLocalizations.of(context).verifyYourEmailMsg,
+                        style: Theme.of(context).textTheme.bodyLarge,
                       ),
                     ),
                   ],
@@ -187,10 +172,10 @@ class _LoginScreenState extends State<LoginScreen> {
           );
         }
       } on FirebaseAuthException catch (e) {
-        const Widget icon = Icon(
+        final Widget icon = Icon(
           Icons.error,
           size: 28.0,
-          color: Colors.red,
+          color: Theme.of(context).colorScheme.error,
         );
         const Duration duration = Duration(seconds: 3);
         if (e.code == 'user-not-found') {

@@ -1,5 +1,8 @@
 {
     "en": "English",
     "gu": "ગુજરાતી",
-    "settings": "Settings"
+    "settings": "Settings",
+    "appName": "QR Scanner",
+    "emptyEmail": "Please enter email",
+    "validEmail": "Please enter valid email"
 }

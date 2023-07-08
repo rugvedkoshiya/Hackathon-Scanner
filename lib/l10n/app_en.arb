@@ -1,5 +1,25 @@
 {
     "en": "English",
     "gu": "ગુજરાતી",
-    "settings": "Settings"
+    "settings": "Settings",
+    "appName": "QR Scanner",
+    "email": "Email",
+    "emailHint": "Enter email",
+    "emptyEmail": "Please enter email",
+    "validEmail": "Please enter valid email",
+    "password": "Password",
+    "passwordHint": "Enter password",
+    "emptyPassword": "Please enter password",
+    "validPassword": "Please enter valid password",
+    "forgotPassword": "Forgot password",
+    "login": "Login",
+    "newUserCreateAccount": "New User? Create Account",
+    "verifyYourEmail": "Verify Your Email",
+    "verifyYourEmailMsg": "A verification mail has been sent to your email",
+    "signup": "Signup",
+    "emptyConfirmPassword": "Please enter confirm password",
+    "passwordDoNotMatch": "Password does not match",
+    "confirmPassword": "Confirm Password",
+    "confirmPasswordHint": "Enter password again",
+    "alreadyHavenAnAccountLogin": "Already have an account? Login"
 }
